@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laboratorio de MOCs — Bond What!</title>
+  <link rel="stylesheet" href="css/estilo.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      background: #F6F7FB;
+      color: #0F172A;
+      font-family: 'Lexend', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      width: 100vw;
+      min-height: 100vh;
+    }
+
+    /* --- SIDEBAR --- */
+    .app-sidebar {
+      background: #FFFFFF;
+      border-right: 1px solid #E5E9F2;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 30;
+    }
+    .sidebar-logo { display: block; padding: 0 10px 22px 10px; }
+    .sidebar-logo img { height: 44px; width: auto; object-fit: contain; display: block; }
+    .sidebar-section-label {
+      font-size: 10.5px; font-weight: 800; letter-spacing: 1.2px;
+      color: #94A3B8; text-transform: uppercase; padding: 0 12px; margin-bottom: 10px;
+    }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 14px; border-radius: 14px; text-decoration: none;
+      color: #475569; font-size: 14px; font-weight: 600;
+      transition: all .2s ease;
+    }
+    .sidebar-link-left { display: flex; align-items: center; gap: 12px; }
+    .nav-icon-swap { width: 24px; height: 24px; position: relative; flex-shrink: 0; }
+    .nav-icon-swap img {
+      width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0;
+      border-radius: 6px; transition: opacity .18s ease, transform .18s ease;
+    }
+    .nav-icon-swap img.icon-on { opacity: 0; }
+    .sidebar-link:hover { background: #F3F1FF; color: #5B46F6; transform: translateX(3px); }
+    .sidebar-link:hover .nav-icon-swap img.icon-off, .sidebar-link.active .nav-icon-swap img.icon-off { opacity: 0; }
+    .sidebar-link:hover .nav-icon-swap img.icon-on,  .sidebar-link.active .nav-icon-swap img.icon-on  { opacity: 1; }
+    .sidebar-link.active { background: #ECE9FE; color: #5B46F6; font-weight: 800; }
+    .nav-badge-pink {
+      background: #F472B6; color: #fff; font-size: 11px; font-weight: 800;
+      padding: 2px 7px; border-radius: 999px;
+    }
+    .sidebar-profile-card {
+      border-top: 1px solid #E5E9F2; padding: 16px 6px 0 6px; margin-top: 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      text-decoration: none; color: inherit; border-radius: 14px;
+    }
+    .sidebar-profile-card:hover { background: #F8FAFC; }
+    .profile-mini-left { display: flex; align-items: center; gap: 10px; }
+    .profile-mini-left img {
+      width: 40px; height: 40px; border-radius: 50%; border: 2px solid #0047FF;
+      object-fit: cover; background: #fff;
+    }
+    .profile-mini-info strong { display: block; font-size: 13.5px; font-weight: 800; }
+    .profile-mini-info span { font-size: 11.5px; color: #64748B; font-weight: 600; }
+
+    /* --- COLUMNA DERECHA --- */
+    .app-main-area {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      width: 100%;
+      min-height: 100vh;
+    }
+    .app-topbar {
+      background: #fff;
+      border-bottom: 1px solid #E5E9F2;
+      padding: 14px 44px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      position: sticky; top: 0; z-index: 20;
+    }
+    .search-bar-box {
+      display: flex; align-items: center; gap: 10px;
+      background: #F4F6FA; border-radius: 999px;
+      padding: 9px 18px; width: 100%; max-width: 440px;
+    }
+    .search-bar-box input {
+      border: none; background: transparent; outline: none; font-size: 13.5px; width: 100%;
+      font-family: inherit;
+    }
+    .topbar-stats-right { display: flex; align-items: center; gap: 12px; }
+    .stat-pill {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px;
+      border-radius: 999px; font-size: 13px; font-weight: 800; text-decoration: none;
+    }
+    .stat-pill img { width: 18px; height: 18px; object-fit: contain; }
+    .stat-pill.streak { background: #FEF9C3; color: #A16207; }
+    .stat-pill.xp { background: #EEF2FF; color: #4338CA; }
+    .topbar-notif {
+      width: 38px; height: 38px; border-radius: 50%; background: #F4F6FA;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;
+    }
+    .topbar-notif span {
+      position: absolute; top: 8px; right: 8px; width: 8px; height: 8px;
+      background: #EF4444; border-radius: 50%;
+    }
+
+    /* --- VISTA PRINCIPAL: LABORATORIO --- */
+    .lab-content {
+      padding: 36px 48px 70px;
+      width: 100%;
+    }
+    .lab-header { margin-bottom: 28px; }
+    .lab-kicker { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #6366F1; text-transform: uppercase; margin-bottom: 6px; }
+    .lab-header h1 { font-size: 36px; font-weight: 900; color: #0F172A; margin: 0 0 6px 0; }
+    .lab-header p { font-size: 15.5px; color: #64748B; margin: 0; }
+
+    /* Banner + Tracker desplegable al hacer hover */
+    .active-project-wrapper {
+      margin-bottom: 44px;
+      width: 100%;
+    }
+    .active-project-banner {
+      background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
+      border-radius: 28px;
+      color: #fff;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.25);
+      cursor: pointer;
+      transition: transform .25s ease, box-shadow .25s ease;
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+    .active-project-wrapper:hover .active-project-banner {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(99, 102, 241, 0.35);
+    }
+    .banner-left { padding: 42px 44px; display: flex; flex-direction: column; justify-content: space-between; }
+    .badge-active-pill {
+      display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 14px;
+      border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; width: fit-content;
+    }
+    .banner-left h2 { font-size: 34px; font-weight: 900; margin: 12px 0 8px; }
+    .banner-left p { font-size: 15px; opacity: 0.92; margin: 0 0 24px; }
+    .banner-progress-bar { width: 100%; height: 9px; background: rgba(255,255,255,0.25); border-radius: 999px; overflow: hidden; margin-bottom: 24px; }
+    .banner-progress-bar i { display: block; height: 100%; background: #FFE600; width: 50%; border-radius: 999px; transition: width .3s ease; }
+    .btn-continue-project {
+      background: #FF551A; color: #fff; border: none; font-family: inherit;
+      font-weight: 900; font-size: 15px; padding: 14px 28px; border-radius: 999px;
+      cursor: pointer; width: fit-content; box-shadow: 0 4px 14px rgba(255, 85, 26, 0.4);
+      transition: background .2s, transform .15s;
+    }
+    .btn-continue-project:hover { background: #E0430E; transform: scale(1.03); }
+    .banner-right { position: relative; background: #2D3139; min-height: 310px; }
+    .banner-right img { width: 100%; height: 100%; max-height: 330px; object-fit: cover; display: block; }
+    .banner-preview-tag {
+      position: absolute; bottom: 12px; right: 18px; font-size: 10px; font-weight: 800;
+      letter-spacing: 1.5px; color: rgba(255,255,255,0.75); background: rgba(0,0,0,0.45);
+      padding: 4px 10px; border-radius: 8px; text-transform: uppercase;
+    }
+
+    /* Tracker de 4 etapas oculto por defecto, aparece suavemente en hover */
+    .stages-drawer {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: grid-template-rows .38s cubic-bezier(.22,1,.36,1),
+                  opacity .3s ease,
+                  transform .38s cubic-bezier(.22,1,.36,1),
+                  margin-top .38s ease;
+      margin-top: 0;
+    }
+    .active-project-wrapper:hover .stages-drawer {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      transform: translateY(0);
+      margin-top: 16px;
+    }
+    .stages-drawer-inner { overflow: hidden; }
+    .stages-preview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding: 4px 2px 8px;
+    }
+    .stage-card-mini {
+      background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 18px;
+      padding: 18px 20px; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .stage-card-mini.done { border-color: #10B981; background: #ECFDF5; }
+    .stage-card-mini.current { border-color: #6366F1; background: #EEF2FF; }
+    .stage-icon-num {
+      width: 34px; height: 34px; border-radius: 50%; background: #E2E8F0; color: #475569;
+      display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13.5px; flex-shrink: 0;
+    }
+    .stage-card-mini.done .stage-icon-num { background: #10B981; color: #fff; }
+    .stage-card-mini.current .stage-icon-num { background: #6366F1; color: #fff; }
+    .stage-info strong { display: block; font-size: 14px; font-weight: 800; color: #0F172A; }
+    .stage-info span { font-size: 12px; color: #64748B; font-weight: 600; }
+
+    /* Sección Tus proyectos */
+    .section-projects-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;
+    }
+    .section-projects-header h3 { font-size: 24px; font-weight: 900; color: #0F172A; margin: 0; }
+    .see-all-link { color: #5B46F6; font-weight: 800; font-size: 14.5px; text-decoration: none; }
+    .see-all-link:hover { text-decoration: underline; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+      width: 100%;
+    }
+    .project-card {
+      background: #FFFFFF; border: 2px solid #E5E9F2; border-radius: 24px;
+      overflow: hidden; cursor: pointer; transition: all .25s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04); display: flex; flex-direction: column;
+    }
+    .project-card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: #CBD5E1; }
+    .project-thumb-wrap { overflow: hidden; height: 220px; background: #F1F5F9; }
+    .project-thumb { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+    .project-card:hover .project-thumb { transform: scale(1.06); }
+    .project-card-body { padding: 22px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
+    .project-status-badge {
+      display: inline-block; font-size: 11px; font-weight: 800; padding: 4px 11px;
+      border-radius: 999px; width: fit-content; margin-bottom: 8px; text-transform: uppercase;
+    }
+    .status-draft { background: #FEF3C7; color: #B45309; }
+    .status-tech { background: #EDE9FE; color: #6D28D9; }
+    .project-card-body h4 { font-size: 18px; font-weight: 900; color: #0F172A; margin: 0 0 4px; }
+    .project-card-body span { font-size: 13px; color: #64748B; font-weight: 600; }
+
+    .project-card.new-moc {
+      border: 2px dashed #93C5FD; background: #F8FAFC; align-items: center; justify-content: center;
+      text-align: center; min-height: 320px;
+    }
+    .project-card.new-moc:hover { border-color: #3B82F6; background: #EFF6FF; }
+    .new-moc-icon {
+      width: 60px; height: 60px; border-radius: 50%; background: #DBEAFE; color: #2563EB;
+      display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; margin-bottom: 14px;
+      transition: transform .2s ease;
+    }
+    .project-card.new-moc:hover .new-moc-icon { transform: scale(1.1) rotate(90deg); }
+    .new-moc h4 { font-size: 18px; font-weight: 900; color: #1E3A8A; margin: 0 0 4px; }
+    .new-moc p { font-size: 13.5px; color: #64748B; margin: 0; font-weight: 600; }
+
+    /* =======================================================
+       VISTA DE FLUJO DE TRABAJO (4 ETAPAS COMPLETAS)
+       ======================================================= */
+    .workflow-view {
+      display: none;
+      padding: 32px 48px 70px;
+      width: 100%;
+    }
+    .workflow-view.active { display: block; animation: fadeIn .25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .workflow-top-nav {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+    .btn-back-lab {
+      background: #fff; border: 1.5px solid #E2E8F0; padding: 10px 20px; border-radius: 999px;
+      font-weight: 800; font-size: 13.5px; cursor: pointer; color: #0F172A; font-family: inherit;
+      transition: all .15s ease;
+    }
+    .btn-back-lab:hover { border-color: #0F172A; background: #F8FAFC; }
+
+    .btn-save-draft {
+      background: #fff; border: 1.5px solid #E2E8F0; padding: 10px 20px; border-radius: 999px;
+      font-weight: 800; font-size: 13px; cursor: pointer; color: #475569; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-save-draft:hover { border-color: #6366F1; color: #6366F1; }
+
+    /* Barra de pasos superior */
+    .steps-progress-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+      background: #fff; padding: 16px 20px; border-radius: 22px; border: 1.5px solid #E2E8F0;
+      margin-bottom: 30px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .step-item {
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px;
+      cursor: pointer; transition: all .2s ease; border-bottom: 3px solid transparent;
+    }
+    .step-item:hover { background: #F8FAFC; }
+    .step-item.active { background: #F5F3FF; border-bottom-color: #6366F1; }
+    .step-item.done { border-bottom-color: #10B981; }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%; background: #E2E8F0; color: #475569;
+      display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; flex-shrink: 0;
+    }
+    .step-item.active .step-num { background: #6366F1; color: #fff; }
+    .step-item.done .step-num { background: #10B981; color: #fff; }
+    .step-info strong { display: block; font-size: 13.5px; font-weight: 800; color: #0F172A; }
+    .step-info span { font-size: 11.5px; color: #64748B; font-weight: 600; }
+
+    /* Layouts por etapa */
+    .stage-panel { display: none; }
+    .stage-panel.active { display: block; animation: fadeIn .25s ease; }
+
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 400px;
+      gap: 30px;
+      align-items: start;
+      width: 100%;
+    }
+    .workflow-card {
+      background: #fff; border: 1.5px solid #E2E8F0; border-radius: 24px; padding: 34px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    }
+    .stage-header-title { margin-bottom: 24px; }
+    .stage-header-title h2 { font-size: 32px; font-weight: 900; color: #0F172A; margin: 0 0 6px; }
+    .stage-header-title p { font-size: 15px; color: #64748B; margin: 0; }
+
+    .form-group { margin-bottom: 24px; }
+    .form-label { display: block; font-size: 14px; font-weight: 800; color: #0F172A; margin-bottom: 10px; }
+    .form-input {
+      width: 100%; padding: 14px 18px; border: 1.5px solid #CBD5E1; border-radius: 14px;
+      font-size: 15px; font-family: inherit; outline: none; transition: border-color .2s, box-shadow .2s;
+      color: #0F172A; background: #fff;
+    }
+    .form-input::placeholder, textarea::placeholder {
+      color: #94A3B8;
+      opacity: 0.7;
+      font-weight: 500;
+    }
+    .form-input:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+
+    /* Categoría / escala sin seleccionar por defecto */
+    .scales-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .scale-opt {
+      border: 1.5px solid #E2E8F0; border-radius: 16px; padding: 15px 16px;
+      cursor: pointer; transition: all .2s ease; background: #fff;
+    }
+    .scale-opt:hover { border-color: #93C5FD; transform: translateY(-2px); }
+    .scale-opt strong { display: block; font-size: 13.5px; font-weight: 800; color: #0F172A; margin-bottom: 3px; }
+    .scale-opt span { font-size: 11px; color: #64748B; font-weight: 600; }
+    .scale-opt.selected {
+      background: #1D4ED8; border-color: #1D4ED8;
+      box-shadow: 0 6px 16px rgba(29, 78, 216, 0.25);
+    }
+    .scale-opt.selected strong { color: #fff; }
+    .scale-opt.selected span { color: rgba(255,255,255,0.85); }
+
+    /* Triple preguntas Forma, Función, Objetivo */
+    .triple-questions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 10px; }
+    .question-box {
+      border: 1.5px solid #E2E8F0; border-radius: 18px; padding: 18px; background: #fff;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .question-box:focus-within { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .q-box-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .q-icon-badge {
+      width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .q-box-header strong { display: block; font-size: 13.5px; font-weight: 800; color: #0F172A; }
+    .q-box-header small { display: block; font-size: 11px; color: #94A3B8; font-weight: 600; }
+    .question-box textarea {
+      width: 100%; border: none; resize: none; font-family: inherit; font-size: 13.5px;
+      outline: none; height: 76px; color: #0F172A; background: transparent; line-height: 1.45;
+    }
+    .q-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .q-chip {
+      background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 999px;
+      padding: 4px 10px; font-size: 11px; font-weight: 700; color: #475569; cursor: pointer;
+      transition: all .15s;
+    }
+    .q-chip:hover { background: #E0E7FF; color: #3730A3; border-color: #C7D2FE; }
+
+    /* Botones de navegación de etapas */
+    .stage-footer-actions {
+      display: flex; justify-content: flex-end; align-items: center; gap: 14px; margin-top: 26px;
+    }
+    .btn-primary-action {
+      background: #FF551A; color: #fff; border: 2px solid #0F172A; font-family: inherit;
+      font-weight: 900; font-size: 15px; padding: 14px 28px; border-radius: 999px;
+      cursor: pointer; box-shadow: 3px 3px 0 #0F172A; transition: transform .1s, background .15s;
+    }
+    .btn-primary-action:hover { background: #E0430E; transform: translateY(-2px); }
+    .btn-primary-action:disabled {
+      background: #FCA58B; border-color: #CBD5E1; box-shadow: none; cursor: not-allowed; transform: none;
+    }
+
+    /* Asistente Bond */
+    .assistant-card {
+      background: linear-gradient(155deg, #7C3AED 0%, #5B21B6 100%);
+      border-radius: 24px; padding: 28px; color: #fff;
+      box-shadow: 0 12px 28px rgba(124, 58, 237, 0.25);
+      position: sticky; top: 96px;
+    }
+    .assistant-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .assistant-header img { width: 46px; height: 46px; border-radius: 50%; background: #fff; padding: 3px; border: 2.5px solid #FFE600; object-fit: cover; }
+    .assistant-header h3 { font-size: 18px; font-weight: 900; margin: 0; }
+    .assistant-header span { font-size: 11.5px; opacity: 0.85; font-weight: 600; }
+    .assistant-desc { font-size: 13px; opacity: 0.92; margin: 0 0 16px; line-height: 1.45; }
+    .assistant-prompt-list { display: flex; flex-direction: column; gap: 9px; }
+    .assistant-prompt-pill {
+      background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 14px; padding: 11px 14px; font-size: 12.5px; font-weight: 700;
+      cursor: pointer; transition: all .2s; text-align: left; color: #fff; font-family: inherit;
+    }
+    .assistant-prompt-pill:hover { background: #fff; color: #4C1D95; transform: translateX(3px); }
+    .assistant-tip {
+      margin-top: 16px; font-size: 12px; background: rgba(0,0,0,0.2); padding: 12px 14px;
+      border-radius: 12px; border-left: 3px solid #FFE600; line-height: 1.45;
+    }
+
+    /* =======================================================
+       ETAPA 2: ELIGE TÉCNICAS + PANEL PLAN ESTÉTICA BOND WHAT
+       ======================================================= */
+    .filter-pills-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 22px; }
+    .filter-pill {
+      background: #fff; border: 1.5px solid #E2E8F0; border-radius: 999px;
+      padding: 7px 16px; font-size: 12.5px; font-weight: 800; color: #475569; cursor: pointer;
+    }
+    .filter-pill.active { background: #1D4ED8; color: #fff; border-color: #1D4ED8; }
+
+    .techniques-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .tech-card {
+      background: #fff; border: 1.5px solid #E2E8F0; border-radius: 20px; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between; transition: all .2s;
+    }
+    .tech-card.selected { border-color: #10B981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); }
+    .tech-illus { height: 115px; display: flex; align-items: center; justify-content: center; padding: 14px; }
+    .tech-illus img { max-height: 85px; width: auto; object-fit: contain; }
+    .tech-body { padding: 16px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
+    .tech-meta { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 800; color: #6366F1; margin-bottom: 6px; text-transform: uppercase; }
+    .tech-body h4 { font-size: 15px; font-weight: 900; margin: 0 0 6px; color: #0F172A; }
+    .tech-body p { font-size: 12px; color: #64748B; margin: 0 0 14px; line-height: 1.4; }
+    .btn-add-tech {
+      width: 100%; padding: 9px; border-radius: 12px; border: 1.5px solid #CBD5E1;
+      background: #fff; font-weight: 800; font-size: 12.5px; cursor: pointer; font-family: inherit;
+      transition: all .15s;
+    }
+    .tech-card.selected .btn-add-tech { background: #10B981; color: #fff; border-color: #10B981; }
+
+    /* Panel derecho Etapa 2 con estética Bond What! */
+    .plan-sidebar-card {
+      background: #FFFFFF;
+      border: 2px solid #0F172A;
+      border-radius: 24px;
+      padding: 26px;
+      position: sticky;
+      top: 96px;
+      box-shadow: 5px 5px 0 #0F172A;
+    }
+    .plan-sidebar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1.5px solid #F1F5F9;
+    }
+    .plan-header-left { display: flex; align-items: center; gap: 10px; }
+    .plan-header-left img {
+      width: 38px; height: 38px; border-radius: 50%; border: 2px solid #0F172A;
+      background: #FFE600; object-fit: cover;
+    }
+    .plan-badge-yellow {
+      background: #FFE600; color: #0F172A; border: 1.5px solid #0F172A;
+      font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 999px;
+      box-shadow: 2px 2px 0 #0F172A;
+    }
+    .plan-selected-item {
+      border: 1.5px solid #E2E8F0; border-left: 4px solid #6366F1;
+      border-radius: 16px; padding: 14px; margin-bottom: 12px;
+      background: #F8FAFC; transition: transform .15s ease;
+    }
+    .plan-selected-item:hover { transform: translateX(2px); border-color: #CBD5E1; }
+    .plan-selected-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .plan-tech-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 13.5px; font-weight: 800; color: #0F172A;
+    }
+    .plan-tech-num {
+      width: 22px; height: 22px; border-radius: 50%; background: #6366F1; color: #fff;
+      font-size: 11px; font-weight: 900; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .btn-remove-plan-tech {
+      background: #FEE2E2; color: #DC2626; border: none; width: 24px; height: 24px;
+      border-radius: 50%; font-weight: 900; font-size: 12px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .btn-remove-plan-tech:hover { background: #FCA5A5; color: #7F1D1D; }
+    .plan-selected-item input {
+      width: 100%; border: 1.5px solid #E2E8F0; border-radius: 10px; padding: 8px 12px;
+      font-size: 12.5px; font-family: inherit; background: #fff; outline: none;
+    }
+    .plan-selected-item input:focus { border-color: #6366F1; }
+
+    /* =======================================================
+       ETAPA 3: PREPARA PIEZAS
+       ======================================================= */
+    .piece-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      border: 1.5px solid #E2E8F0; border-radius: 18px; padding: 14px 18px; margin-bottom: 12px;
+      background: #fff; cursor: pointer; transition: all .18s ease;
+    }
+    .piece-row:hover { border-color: #CBD5E1; }
+    .piece-row.checked { border-color: #10B981; background: #F0FDF4; }
+    .piece-row.equiv-active { border-color: #F59E0B; background: #FFFBEB; }
+    .piece-left { display: flex; align-items: center; gap: 14px; }
+    .piece-check {
+      width: 24px; height: 24px; border-radius: 7px; border: 2px solid #CBD5E1;
+      display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 13px;
+      flex-shrink: 0;
+    }
+    .piece-row.checked .piece-check { background: #10B981; border-color: #10B981; }
+    .piece-row.equiv-active .piece-check { background: #F59E0B; border-color: #F59E0B; }
+
+    .piece-thumb-slot {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: #F1F5F9; border: 1.5px dashed #CBD5E1;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0; position: relative;
+    }
+    .piece-thumb-slot.has-img { border-style: solid; border-color: #E2E8F0; background: #EEF2FF; }
+    .piece-thumb-slot img { width: 36px; height: 36px; object-fit: contain; }
+    .piece-thumb-slot span { font-size: 9.5px; font-weight: 800; color: #94A3B8; text-align: center; line-height: 1.1; }
+
+    .piece-tag {
+      display: inline-block; background: #EEF2FF; color: #4338CA;
+      font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 6px; margin-top: 4px;
+    }
+    .btn-equiv {
+      border: 1.5px solid #CBD5E1; background: #fff; border-radius: 12px; padding: 8px 14px;
+      font-size: 12px; font-weight: 800; color: #475569; cursor: pointer; font-family: inherit;
+      transition: all .15s ease; white-space: nowrap;
+    }
+    .btn-equiv:hover { border-color: #94A3B8; color: #0F172A; }
+    .btn-equiv.selected {
+      background: #FEF3C7; border-color: #F59E0B; color: #B45309;
+    }
+
+    .mobile-sync-card {
+      background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+      border-radius: 22px; padding: 26px; color: #fff; margin-bottom: 18px;
+      transition: all .3s ease;
+    }
+    .mobile-sync-card.linked {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      box-shadow: 0 10px 24px rgba(5, 150, 105, 0.25);
+    }
+    .linked-status-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.16); padding: 10px 14px; border-radius: 14px; margin-top: 14px;
+    }
+    .btn-unlink-mini {
+      background: rgba(0,0,0,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 800; cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-unlink-mini:hover { background: rgba(0,0,0,0.4); }
+
+    /* MODAL QR */
+    .qr-modal-card {
+      background: #fff; border-radius: 28px; max-width: 440px; width: 100%; padding: 32px 28px;
+      text-align: center; box-shadow: 0 24px 54px rgba(0,0,0,0.28); position: relative;
+      animation: popIn .25s cubic-bezier(.22,1.3,.36,1);
+    }
+    .qr-box-wrapper {
+      width: 210px; height: 210px; margin: 18px auto; border-radius: 22px;
+      border: 3px solid #2563EB; padding: 14px; position: relative;
+      background: #F8FAFC; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .qr-box-wrapper svg { width: 100%; height: 100%; }
+    .qr-scan-laser {
+      position: absolute; left: 10px; right: 10px; height: 3px;
+      background: #FF551A; box-shadow: 0 0 12px #FF551A;
+      animation: scanMove 2.2s ease-in-out infinite;
+    }
+    @keyframes scanMove {
+      0%, 100% { top: 14px; }
+      50% { top: 190px; }
+    }
+    .scan-progress-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #EFF6FF; color: #1D4ED8; padding: 7px 14px; border-radius: 999px;
+      font-size: 12px; font-weight: 800; margin-bottom: 18px;
+    }
+
+    /* =======================================================
+       ETAPA 4: CONSTRUYE Y PRUEBA + IA ESTÉTICA BOND WHAT
+       ======================================================= */
+    .mobile-banner-bar {
+      background: linear-gradient(90deg, #1D4ED8 0%, #2563EB 100%);
+      border-radius: 18px; padding: 16px 24px; color: #fff;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
+    }
+    .iteration-preview-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; margin-bottom: 26px; }
+    .iteration-main-photo {
+      border-radius: 22px; overflow: hidden; border: 2px solid #E2E8F0; background: #0F172A;
+      position: relative; height: 310px; display: flex; align-items: center; justify-content: center;
+    }
+    .iteration-main-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .iteration-empty-overlay {
+      text-align: center; color: #fff; padding: 28px;
+    }
+    .iteration-empty-overlay span { font-size: 40px; display: block; margin-bottom: 10px; }
+    .iteration-empty-overlay strong { display: block; font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+    .iteration-empty-overlay p { font-size: 13px; color: #94A3B8; margin: 0; }
+
+    /* Tarjeta Feedback IA articulada con la estética Bond What! */
+    .bond-ai-feedback-panel {
+      background: linear-gradient(155deg, #1E1B4B 0%, #312E81 55%, #4C1D95 100%);
+      border: 2px solid #0F172A;
+      border-radius: 24px;
+      padding: 24px;
+      color: #fff;
+      box-shadow: 5px 5px 0 #0F172A;
+    }
+    .bond-ai-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.14);
+    }
+    .bond-ai-avatar-group { display: flex; align-items: center; gap: 12px; }
+    .bond-ai-avatar-group img {
+      width: 44px; height: 44px; border-radius: 50%; background: #FFE600;
+      border: 2.5px solid #FFE600; object-fit: cover;
+    }
+    .bond-ai-badge {
+      background: #FFE600; color: #0F172A; font-size: 10.5px; font-weight: 900;
+      padding: 4px 10px; border-radius: 999px; letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .ai-insight-card {
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .ai-insight-card.good { border-left: 4px solid #34D399; }
+    .ai-insight-card.warn { border-left: 4px solid #FBBF24; margin-bottom: 0; }
+    .ai-insight-tag {
+      font-size: 10.5px; font-weight: 900; letter-spacing: 0.8px; text-transform: uppercase;
+      margin-bottom: 5px; display: block;
+    }
+    .ai-insight-card.good .ai-insight-tag { color: #6EE7B7; }
+    .ai-insight-card.warn .ai-insight-tag { color: #FDE68A; }
+    .ai-insight-card strong { display: block; font-size: 14px; font-weight: 800; margin-bottom: 4px; color: #fff; }
+    .ai-insight-card p { font-size: 12.5px; color: rgba(255,255,255,0.86); margin: 0; line-height: 1.45; }
+
+    /* Historial de iteraciones dinámico */
+    .history-empty-box {
+      border: 2px dashed #CBD5E1; border-radius: 18px; padding: 26px; text-align: center;
+      background: #F8FAFC; margin-top: 12px; color: #64748B; font-size: 13.5px; font-weight: 600;
+    }
+    .history-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 12px; }
+    .history-card {
+      border: 2px solid #E2E8F0; border-radius: 16px; overflow: hidden; cursor: pointer; background: #fff;
+      transition: all .2s ease; animation: fadeIn .25s ease;
+    }
+    .history-card.active { border-color: #6366F1; box-shadow: 0 4px 12px rgba(99,102,241,0.18); }
+    .history-card img { width: 100%; height: 110px; object-fit: cover; display: block; }
+
+    /* Modales */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.58); backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .publish-modal {
+      background: #fff; border-radius: 28px; max-width: 420px; width: 100%; padding: 34px 28px;
+      text-align: center; box-shadow: 0 24px 50px rgba(0,0,0,0.25); position: relative;
+      animation: popIn .25s cubic-bezier(.22,1.3,.36,1);
+    }
+    @keyframes popIn { from { transform: scale(.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-close-x {
+      position: absolute; top: 16px; right: 18px; background: none; border: none; font-size: 20px;
+      color: #94A3B8; cursor: pointer; font-weight: 800;
+    }
+    .modal-badge-icon {
+      width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff;
+    }
+
+    @media (max-width: 1024px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .app-sidebar { display: none; }
+      .workflow-grid, .iteration-preview-grid { grid-template-columns: 1fr; }
+      .assistant-card, .plan-sidebar-card { position: static; }
+      .triple-questions-grid, .techniques-grid, .projects-grid { grid-template-columns: 1fr; }
+      .scales-grid, .stages-preview, .steps-progress-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- SIDEBAR UNIFICADO -->
+    <aside class="app-sidebar">
+      <div>
+        <a href="index.html" class="sidebar-logo" title="Volver al inicio">
+          <img src="assets/img/logos/logo-bondwhat_1.png" alt="Bond What!" />
+        </a>
+
+        <div class="sidebar-section-label">MI ESPACIO</div>
+
+        <nav class="sidebar-nav">
+          <a href="web_app_inicio.html" class="sidebar-link">
+            <div class="sidebar-link-left">
+              <div class="nav-icon-swap">
+                <img src="assets/img/ilustraciones/icon_home_off.png" alt="" class="icon-off" />
+                <img src="assets/img/ilustraciones/icon_home_on.png" alt="" class="icon-on" />
+              </div>
+              <span>Inicio</span>
+            </div>
+          </a>
+
+          <a href="web_app_mapa_islas.html" class="sidebar-link">
+            <div class="sidebar-link-left">
+              <div class="nav-icon-swap">
+                <img src="assets/img/ilustraciones/icon_mapa_off.png" alt="" class="icon-off" />
+                <img src="assets/img/ilustraciones/icon_mapa_on.png" alt="" class="icon-on" />
+              </div>
+              <span>Mapa de islas</span>
+            </div>
+          </a>
+
+          <a href="web_app_laboratorio.html" class="sidebar-link active">
+            <div class="sidebar-link-left">
+              <div class="nav-icon-swap">
+                <img src="assets/img/ilustraciones/icon_lab_off.png" alt="" class="icon-off" />
+                <img src="assets/img/ilustraciones/icon_lab_on.png" alt="" class="icon-on" />
+              </div>
+              <span>Laboratorio</span>
+            </div>
+          </a>
+
+          <a href="web_app_biblioteca.html" class="sidebar-link">
+            <div class="sidebar-link-left">
+              <div class="nav-icon-swap">
+                <img src="assets/img/ilustraciones/icon_biblioteca_off.png" alt="" class="icon-off" />
+                <img src="assets/img/ilustraciones/icon_biblioteca_on.png" alt="" class="icon-on" />
+              </div>
+              <span>Biblioteca</span>
+            </div>
+          </a>
+
+          <a href="web_app_arena_practica.html" class="sidebar-link">
+            <div class="sidebar-link-left">
+              <div class="nav-icon-swap">
+                <img src="assets/img/ilustraciones/icon_energia_off.png" alt="" class="icon-off" />
+                <img src="assets/img/ilustraciones/icon_energia_on.png" alt="" class="icon-on" />
+              </div>
+              <span>Arena práctica</span>
+            </div>
+          </a>
+
+          <a href="web_app_mi_progreso.html" class="sidebar-link">
+            <div class="sidebar-link-left">
+              <div class="nav-icon-swap">
+                <img src="assets/img/ilustraciones/icon_progreso_off.png" alt="" class="icon-off" />
+                <img src="assets/img/ilustraciones/icon_progreso_on.png" alt="" class="icon-on" />
+              </div>
+              <span>Mi progreso</span>
+            </div>
+          </a>
+
+          <a href="web_app_comunidad.html" class="sidebar-link">
+            <div class="sidebar-link-left">
+              <div class="nav-icon-swap">
+                <img src="assets/img/ilustraciones/icon_comunidad_off.png" alt="" class="icon-off" />
+                <img src="assets/img/ilustraciones/icon_comunidad_on.png" alt="" class="icon-on" />
+              </div>
+              <span>Comunidad</span>
+            </div>
+            <span class="nav-badge-pink">3</span>
+          </a>
+        </nav>
+      </div>
+
+      <a href="web_app_perfil.html" class="sidebar-profile-card">
+        <div class="profile-mini-left">
+          <img src="assets/img/ilustraciones/perfil_nivel_1.png" alt="Avatar Constructor" />
+          <div class="profile-mini-info">
+            <strong id="sidebar-user-name">Hugo F.</strong>
+            <span>Nivel 8 · Constructor</span>
+          </div>
+        </div>
+        <span style="color: #94A3B8; font-weight: 800;">→</span>
+      </a>
+    </aside>
+
+    <!-- COLUMNA DERECHA -->
+    <div class="app-main-area">
+
+      <!-- TOPBAR -->
+      <header class="app-topbar">
+        <div class="search-bar-box">
+          <span>🔍</span>
+          <input type="text" placeholder="Buscar técnicas, islas o creadores..." />
+        </div>
+
+        <div class="topbar-stats-right">
+          <a href="web_app_mi_progreso.html" class="stat-pill streak">
+            <img src="assets/img/ilustraciones/energia_1.png" alt="Racha" />
+            <span>12 días</span>
+          </a>
+          <a href="web_app_mi_progreso.html" class="stat-pill xp">
+            <img src="assets/img/ilustraciones/moneda.png" alt="XP" />
+            <span>1.280 XP</span>
+          </a>
+          <div class="topbar-notif" title="Notificaciones">
+            <span></span>
+            🔔
+          </div>
+        </div>
+      </header>
+
+      <!-- =======================================================
+           VISTA 1: PANTALLA PRINCIPAL DEL LABORATORIO DE MOCS
+           ======================================================= -->
+      <main class="lab-content" id="labMainView">
+        <div class="lab-header">
+          <div class="lab-kicker">LABORATORIO DE MOCS</div>
+          <h1>De una idea a algo increíble</h1>
+          <p>Planea tu creación por etapas. Bond te ayuda a pensar, no a copiar instrucciones.</p>
+        </div>
+
+        <!-- PROYECTO ACTIVO + TRACKER QUE APARECE AL HACER HOVER -->
+        <div class="active-project-wrapper">
+          <div class="active-project-banner" onclick="openProject('explorador')">
+            <div class="banner-left">
+              <div>
+                <span class="badge-active-pill">PROYECTO ACTIVO</span>
+                <h2>Mi vehículo explorador</h2>
+                <p>Tu plan está listo para empezar a construir.<br><small style="opacity:0.8;">Planeación · 2 de 4 etapas listas</small></p>
+              </div>
+              <div>
+                <div class="banner-progress-bar"><i></i></div>
+                <button class="btn-continue-project" type="button">Continuar proyecto →</button>
+              </div>
+            </div>
+            <div class="banner-right">
+              <img src="assets/img/recursos_visuales/mi_vehiculo_explorador.jpeg"
+                   onerror="this.onerror=null;this.src='assets/img/recursos_visuales/mi_vehiculo_explorador.png';"
+                   alt="Mi vehículo explorador LEGO" />
+              <span class="banner-preview-tag">VISTA PREVIA · BOCETO</span>
+            </div>
+          </div>
+
+          <!-- Tracker desplegable al hacer hover sobre el proyecto activo -->
+          <div class="stages-drawer">
+            <div class="stages-drawer-inner">
+              <div class="stages-preview">
+                <div class="stage-card-mini done">
+                  <div class="stage-icon-num">✓</div>
+                  <div class="stage-info">
+                    <strong>Desglosa tu idea</strong>
+                    <span>Forma, función y objetivo</span>
+                  </div>
+                </div>
+                <div class="stage-card-mini done">
+                  <div class="stage-icon-num">✓</div>
+                  <div class="stage-info">
+                    <strong>Elige técnicas</strong>
+                    <span>3 técnicas seleccionadas</span>
+                  </div>
+                </div>
+                <div class="stage-card-mini current">
+                  <div class="stage-icon-num">3</div>
+                  <div class="stage-info">
+                    <strong>Prepara piezas</strong>
+                    <span>Organiza tu inventario</span>
+                  </div>
+                </div>
+                <div class="stage-card-mini">
+                  <div class="stage-icon-num">4</div>
+                  <div class="stage-info">
+                    <strong>Construye y prueba</strong>
+                    <span>Documenta cada iteración</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN TUS PROYECTOS -->
+        <div class="section-projects-header">
+          <h3>Tus proyectos</h3>
+          <a href="#" class="see-all-link" onclick="event.preventDefault()">Ver todos →</a>
+        </div>
+
+        <div class="projects-grid">
+          <!-- Proyecto 1: Moai -> moai.jpg -->
+          <div class="project-card" onclick="openProject('moai')">
+            <div class="project-thumb-wrap">
+              <img src="assets/img/recursos_visuales/moai.jpeg"
+                   onerror="this.onerror=null;this.src='assets/img/recursos_visuales/moai.jpeg';"
+                   alt="Moai LEGO" class="project-thumb" />
+            </div>
+            <div class="project-card-body">
+              <div>
+                <span class="project-status-badge status-draft">Borrador</span>
+                <h4>Moai</h4>
+                <span>Actualizado hace 2 días</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Proyecto 2: Edificio -> edificio.jpg (Etapa de técnicas) -->
+          <div class="project-card" onclick="openProject('edificio')">
+            <div class="project-thumb-wrap">
+              <img src="assets/img/recursos_visuales/edificio.jpg"
+                   onerror="this.onerror=null;this.src='assets/img/recursos_visuales/edificio.jpeg';"
+                   alt="Edificio LEGO" class="project-thumb" />
+            </div>
+            <div class="project-card-body">
+              <div>
+                <span class="project-status-badge status-tech">Eligiendo técnicas</span>
+                <h4>Edificio</h4>
+                <span>Actualizado hace 2 días</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta Nuevo MOC -->
+          <div class="project-card new-moc" onclick="openProject('nuevo')">
+            <div class="new-moc-icon">+</div>
+            <h4>Nuevo MOC</h4>
+            <p>Empieza desde una idea</p>
+          </div>
+        </div>
+      </main>
+
+      <!-- =======================================================
+           VISTA 2: FLUJO DE TRABAJO INTERACTIVO (4 ETAPAS)
+           ======================================================= -->
+      <section class="workflow-view" id="workflowView">
+        <div class="workflow-top-nav">
+          <button class="btn-back-lab" type="button" onclick="closeWorkflow()">← Volver al Laboratorio</button>
+          <button class="btn-save-draft" type="button" onclick="saveDraftToast()">💾 Guardar borrador</button>
+        </div>
+
+        <!-- Barra de pasos superior -->
+        <div class="steps-progress-bar">
+          <div class="step-item active" id="stepTab1" onclick="goToStage(1)">
+            <div class="step-num" id="stepNum1">1</div>
+            <div class="step-info">
+              <strong>Desglosa tu idea</strong>
+              <span>Forma, función y objetivo</span>
+            </div>
+          </div>
+          <div class="step-item" id="stepTab2" onclick="goToStage(2)">
+            <div class="step-num" id="stepNum2">2</div>
+            <div class="step-info">
+              <strong>Elige técnicas</strong>
+              <span>Selecciona tu plan</span>
+            </div>
+          </div>
+          <div class="step-item" id="stepTab3" onclick="goToStage(3)">
+            <div class="step-num" id="stepNum3">3</div>
+            <div class="step-info">
+              <strong>Prepara piezas</strong>
+              <span>Organiza tu inventario</span>
+            </div>
+          </div>
+          <div class="step-item" id="stepTab4" onclick="goToStage(4)">
+            <div class="step-num" id="stepNum4">4</div>
+            <div class="step-info">
+              <strong>Construye y prueba</strong>
+              <span>Documenta cada iteración</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= ETAPA 1: DESGLOSA TU IDEA ================= -->
+        <div class="stage-panel active" id="stage1">
+          <div class="workflow-grid">
+            <div class="workflow-card">
+              <div class="stage-header-title">
+                <div class="lab-kicker">ETAPA 1 DE 4</div>
+                <h2>Desglosa tu idea</h2>
+                <p>Define el concepto antes de tocar una sola pieza. Unas pocas frases bastan: puedes ajustarlas cuando quieras.</p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="projTitleInput">Título del proyecto</label>
+                <input type="text" id="projTitleInput" class="form-input" placeholder="Ej. Explorador Lunar Articulado" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Categoría / escala</label>
+                <div class="scales-grid" id="categoryGrid">
+                  <div class="scale-opt" data-cat="Vehículo" onclick="selectCategory(this)">
+                    <strong>Vehículo</strong>
+                    <span>Ruedas, chasis, cabina</span>
+                  </div>
+                  <div class="scale-opt" data-cat="Criatura / Mecha" onclick="selectCategory(this)">
+                    <strong>Criatura / Mecha</strong>
+                    <span>Articulación y pose</span>
+                  </div>
+                  <div class="scale-opt" data-cat="Arquitectura / Escenario" onclick="selectCategory(this)">
+                    <strong>Arquitectura / Escenario</strong>
+                    <span>Fachadas y dioramas</span>
+                  </div>
+                  <div class="scale-opt" data-cat="Mecanismo" onclick="selectCategory(this)">
+                    <strong>Mecanismo</strong>
+                    <span>Movimiento y función</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Forma, función y objetivo</label>
+                <p style="font-size: 13px; color: #64748B; margin: -4px 0 14px;">Tres respuestas breves que guiarán todo el plan.</p>
+
+                <div class="triple-questions-grid">
+                  <div class="question-box">
+                    <div class="q-box-header">
+                      <div class="q-icon-badge" style="background:#1D4ED8;">▲</div>
+                      <div>
+                        <strong>¿Qué forma tiene?</strong>
+                        <small>Silueta y estructura general</small>
+                      </div>
+                    </div>
+                    <textarea id="qForma" placeholder="Agrega aquí la forma (ej. cuerpo bajo y ancho, cabina elevada...)"></textarea>
+                    <div class="q-chips">
+                      <span class="q-chip" onclick="appendChip('qForma', 'Silueta alargada')">+ Silueta alargada</span>
+                      <span class="q-chip" onclick="appendChip('qForma', 'Compacto y robusto')">+ Compacto y robusto</span>
+                      <span class="q-chip" onclick="appendChip('qForma', 'Simétrico')">+ Simétrico</span>
+                    </div>
+                  </div>
+
+                  <div class="question-box">
+                    <div class="q-box-header">
+                      <div class="q-icon-badge" style="background:#0D9488;">⚙</div>
+                      <div>
+                        <strong>¿Qué función cumple?</strong>
+                        <small>Qué hace o qué se mueve</small>
+                      </div>
+                    </div>
+                    <textarea id="qFuncion" placeholder="Agrega aquí qué función cumple (ej. suspensión independiente, pinza móvil...)"></textarea>
+                    <div class="q-chips">
+                      <span class="q-chip" onclick="appendChip('qFuncion', 'Suspensión')">+ Suspensión</span>
+                      <span class="q-chip" onclick="appendChip('qFuncion', 'Pinza móvil')">+ Pinza móvil</span>
+                      <span class="q-chip" onclick="appendChip('qFuncion', 'Dirección')">+ Dirección</span>
+                    </div>
+                  </div>
+
+                  <div class="question-box">
+                    <div class="q-box-header">
+                      <div class="q-icon-badge" style="background:#EA580C;">◎</div>
+                      <div>
+                        <strong>¿Cuál es el reto principal?</strong>
+                        <small>Lo que más te preocupa resolver</small>
+                      </div>
+                    </div>
+                    <textarea id="qReto" placeholder="Agrega aquí el reto principal (ej. que el brazo sostenga peso sin doblarse...)"></textarea>
+                    <div class="q-chips">
+                      <span class="q-chip" onclick="appendChip('qReto', 'Estabilidad')">+ Estabilidad</span>
+                      <span class="q-chip" onclick="appendChip('qReto', 'Peso del brazo')">+ Peso del brazo</span>
+                      <span class="q-chip" onclick="appendChip('qReto', 'Tamaño')">+ Tamaño</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stage-footer-actions">
+                <button class="btn-primary-action" type="button" onclick="completeStage1()">Guardar y elegir técnicas →</button>
+              </div>
+            </div>
+
+            <!-- Asistente Bond -->
+            <aside class="assistant-card">
+              <div class="assistant-header">
+                <img src="assets/img/ilustraciones/mascota_rostro_2.png" alt="Asistente Bond" />
+                <div>
+                  <h3>Asistente Bond</h3>
+                  <span>Preguntas, no instrucciones</span>
+                </div>
+              </div>
+              <p class="assistant-desc">¿Atascado? Toca una pregunta guía para pensar con otra perspectiva.</p>
+
+              <div class="assistant-prompt-list">
+                <button class="assistant-prompt-pill" type="button" onclick="useAssistantPrompt(this)">¿Qué silueta reconocerías aunque lo vieras en sombra?</button>
+                <button class="assistant-prompt-pill" type="button" onclick="useAssistantPrompt(this)">¿Qué parte tiene que moverse y cuál debe quedarse firme?</button>
+                <button class="assistant-prompt-pill" type="button" onclick="useAssistantPrompt(this)">¿Dónde crees que se va a romper primero si lo levantas?</button>
+                <button class="assistant-prompt-pill" type="button" onclick="useAssistantPrompt(this)">¿Qué pasaría si lo hicieras la mitad de grande?</button>
+                <button class="assistant-prompt-pill" type="button" onclick="useAssistantPrompt(this)">¿Qué piezas que ya tienes podrían inspirarte una forma?</button>
+              </div>
+
+              <div class="assistant-tip" id="assistantTipBox">
+                💡 <strong>Pista:</strong> Dibuja la silueta con tres trazos antes de elegir piezas.
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- ================= ETAPA 2: ELIGE TÉCNICAS ================= -->
+        <div class="stage-panel" id="stage2">
+          <div class="workflow-grid">
+            <div class="workflow-card">
+              <div class="stage-header-title">
+                <div class="lab-kicker">ETAPA 2 DE 4</div>
+                <h2>Elige técnicas</h2>
+                <p>Selecciona de la Biblioteca las técnicas constructivas que resolverán el reto de tu MOC.</p>
+              </div>
+
+              <div class="filter-pills-row">
+                <button class="filter-pill active" type="button" onclick="filterTechs('all', this)">Todas</button>
+                <button class="filter-pill" type="button" onclick="filterTechs('SNOT', this)">SNOT</button>
+                <button class="filter-pill" type="button" onclick="filterTechs('Uniones', this)">Uniones en ángulo</button>
+                <button class="filter-pill" type="button" onclick="filterTechs('Mecanismos', this)">Engranajes / Ejes</button>
+              </div>
+
+              <div class="techniques-grid" id="techniquesGrid">
+                <div class="tech-card" data-tech="SNOT lateral" data-cat="SNOT">
+                  <div class="tech-illus" style="background:#EEF2FF;"><img src="assets/img/recursos_visuales/brick_básico.png" alt="SNOT"></div>
+                  <div class="tech-body">
+                    <div>
+                      <div class="tech-meta"><span>SNOT</span><span>●●○ Medio</span></div>
+                      <h4>SNOT lateral</h4>
+                      <p>Studs Not On Top: construye mirando hacia los lados para superficies lisas y detalles.</p>
+                    </div>
+                    <button class="btn-add-tech" type="button" onclick="toggleTech(this)">+ Añadir al plan</button>
+                  </div>
+                </div>
+
+                <div class="tech-card" data-tech="Bisagra de fricción" data-cat="Uniones">
+                  <div class="tech-illus" style="background:#ECFDF5;"><img src="assets/img/recursos_visuales/plate_basico.png" alt="Bisagra"></div>
+                  <div class="tech-body">
+                    <div>
+                      <div class="tech-meta"><span>UNIONES EN ÁNGULO</span><span>●○○ Fácil</span></div>
+                      <h4>Bisagra de fricción</h4>
+                      <p>Une dos módulos con un ángulo ajustable que mantiene la pose sin soltarse.</p>
+                    </div>
+                    <button class="btn-add-tech" type="button" onclick="toggleTech(this)">+ Añadir al plan</button>
+                  </div>
+                </div>
+
+                <div class="tech-card" data-tech="Ejes y engranajes Technic" data-cat="Mecanismos">
+                  <div class="tech-illus" style="background:#FFF1F2;"><img src="assets/img/recursos_visuales/tile_basico.png" alt="Technic"></div>
+                  <div class="tech-body">
+                    <div>
+                      <div class="tech-meta"><span>ENGRANAJES / EJES</span><span>●●○ Medio</span></div>
+                      <h4>Ejes y engranajes Technic</h4>
+                      <p>Transmite giro entre piezas con ejes y ruedas dentadas para crear movimiento.</p>
+                    </div>
+                    <button class="btn-add-tech" type="button" onclick="toggleTech(this)">+ Añadir al plan</button>
+                  </div>
+                </div>
+
+                <div class="tech-card" data-tech="Triangulación" data-cat="Uniones">
+                  <div class="tech-illus" style="background:#F5F3FF;"><img src="assets/img/recursos_visuales/Group 2259.png" alt="Triangulación"></div>
+                  <div class="tech-body">
+                    <div>
+                      <div class="tech-meta"><span>REFUERZO ESTRUCTURAL</span><span>●○○ Fácil</span></div>
+                      <h4>Triangulación</h4>
+                      <p>Crea triángulos y capas cruzadas para que el chasis no se flexione.</p>
+                    </div>
+                    <button class="btn-add-tech" type="button" onclick="toggleTech(this)">+ Añadir al plan</button>
+                  </div>
+                </div>
+
+                <div class="tech-card" data-tech="Ángulos con clips" data-cat="Uniones">
+                  <div class="tech-illus" style="background:#FFFBEB;"><img src="assets/img/recursos_visuales/Group 2260.png" alt="Clips"></div>
+                  <div class="tech-body">
+                    <div>
+                      <div class="tech-meta"><span>UNIONES EN ÁNGULO</span><span>●●● Avanzado</span></div>
+                      <h4>Ángulos con clips</h4>
+                      <p>Orienta piezas a 45° o 22,5° con clips y barras para siluetas orgánicas.</p>
+                    </div>
+                    <button class="btn-add-tech" type="button" onclick="toggleTech(this)">+ Añadir al plan</button>
+                  </div>
+                </div>
+
+                <div class="tech-card" data-tech="Studs invertidos" data-cat="SNOT">
+                  <div class="tech-illus" style="background:#EFF6FF;"><img src="assets/img/recursos_visuales/Group 2262.png" alt="Invertidos"></div>
+                  <div class="tech-body">
+                    <div>
+                      <div class="tech-meta"><span>REFUERZO ESTRUCTURAL</span><span>●●○ Medio</span></div>
+                      <h4>Studs invertidos</h4>
+                      <p>Bloquea capas desde abajo para esconder uniones y ganar rigidez.</p>
+                    </div>
+                    <button class="btn-add-tech" type="button" onclick="toggleTech(this)">+ Añadir al plan</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel derecho Etapa 2 con estética Bond What! -->
+            <aside class="plan-sidebar-card">
+              <div class="plan-sidebar-header">
+                <div class="plan-header-left">
+                  <img src="assets/img/ilustraciones/mascota_rostro_2.png" alt="Bond" />
+                  <div>
+                    <h3 style="margin:0; font-size:16px; font-weight:900; color:#0F172A;">Técnicas elegidas (<span id="selectedTechCount">0</span>)</h3>
+                    <span style="font-size:11.5px; color:#64748B; font-weight:600;">Proyecto: <strong id="planProjectLabel" style="color:#4338CA;">tu MOC</strong></span>
+                  </div>
+                </div>
+                <span class="plan-badge-yellow">Tu plan</span>
+              </div>
+
+              <div id="selectedTechList">
+                <div style="border:2px dashed #CBD5E1; border-radius:16px; padding:26px 16px; text-align:center; font-size:13px; color:#64748B; font-weight:600; margin-bottom:16px; background:#F8FAFC;">
+                  Selecciona al menos una técnica de la izquierda para armar tu plan constructivo.
+                </div>
+              </div>
+
+              <button class="btn-primary-action" id="btnToStage3" type="button" style="width:100%; margin-bottom:12px;" disabled onclick="completeStage2()">Continuar a preparar piezas →</button>
+              <button type="button" onclick="goToStage(1)" style="width:100%; background:none; border:none; color:#64748B; font-weight:800; font-size:12.5px; cursor:pointer;">← Volver a la idea</button>
+            </aside>
+          </div>
+        </div>
+
+        <!-- ================= ETAPA 3: PREPARA PIEZAS ================= -->
+        <div class="stage-panel" id="stage3">
+          <div class="workflow-grid">
+            <div class="workflow-card">
+              <div class="stage-header-title">
+                <div class="lab-kicker">ETAPA 3 DE 4</div>
+                <h2>Prepara piezas</h2>
+                <p>Estas son las piezas clave según tus técnicas. Si no tienes la exacta, improvisa con una equivalente.</p>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <strong style="font-size:15.5px;">Piezas esenciales sugeridas</strong>
+                <span style="font-size:13px; font-weight:800; color:#6366F1;" id="piecesReadyCount">0 de 5 listas</span>
+              </div>
+
+              <div id="piecesChecklist">
+                <div class="piece-row" onclick="togglePiece(this)">
+                  <div class="piece-left">
+                    <div class="piece-check">✓</div>
+                    <div class="piece-thumb-slot has-img">
+                      <img src="assets/img/recursos_visuales/brick_básico.png" alt="Bricks con studs laterales" />
+                    </div>
+                    <div>
+                      <strong style="font-size:14.5px;">Bricks con studs laterales <span style="color:#6366F1;">×6</span></strong>
+                      <div style="font-size:12px; color:#64748B;">Ref. 87087 · para SNOT</div>
+                      <span class="piece-tag">SNOT lateral</span>
+                    </div>
+                  </div>
+                  <button class="btn-equiv" type="button" onclick="toggleEquivBtn(event, this)">Tengo piezas equivalentes</button>
+                </div>
+
+                <div class="piece-row" onclick="togglePiece(this)">
+                  <div class="piece-left">
+                    <div class="piece-check">✓</div>
+                    <div class="piece-thumb-slot has-img">
+                      <img src="assets/img/recursos_visuales/plate_basico.png" alt="Soportes en ángulo" />
+                    </div>
+                    <div>
+                      <strong style="font-size:14.5px;">Soportes en ángulo (brackets) <span style="color:#6366F1;">×4</span></strong>
+                      <div style="font-size:12px; color:#64748B;">Ref. 44728 · giran el stud 90°</div>
+                      <span class="piece-tag">SNOT lateral</span>
+                    </div>
+                  </div>
+                  <button class="btn-equiv" type="button" onclick="toggleEquivBtn(event, this)">Tengo piezas equivalentes</button>
+                </div>
+
+                <div class="piece-row" onclick="togglePiece(this)">
+                  <div class="piece-left">
+                    <div class="piece-check">✓</div>
+                    <div class="piece-thumb-slot has-img">
+                      <img src="assets/img/recursos_visuales/tile_basico.png" alt="Bisagras de fricción" />
+                    </div>
+                    <div>
+                      <strong style="font-size:14.5px;">Bisagras de fricción <span style="color:#6366F1;">×4</span></strong>
+                      <div style="font-size:12px; color:#64748B;">Ref. 44301 · mantienen la pose</div>
+                      <span class="piece-tag">Bisagra de fricción</span>
+                    </div>
+                  </div>
+                  <button class="btn-equiv" type="button" onclick="toggleEquivBtn(event, this)">Tengo piezas equivalentes</button>
+                </div>
+
+                <div class="piece-row" onclick="togglePiece(this)">
+                  <div class="piece-left">
+                    <div class="piece-check">✓</div>
+                    <div class="piece-thumb-slot has-img">
+                      <img src="assets/img/recursos_visuales/Group 2259.png" alt="Ejes Technic" />
+                    </div>
+                    <div>
+                      <strong style="font-size:14.5px;">Ejes Technic <span style="color:#6366F1;">×5</span></strong>
+                      <div style="font-size:12px; color:#64748B;">Longitudes 3, 4 y 6</div>
+                      <span class="piece-tag">Ejes y engranajes Technic</span>
+                    </div>
+                  </div>
+                  <button class="btn-equiv" type="button" onclick="toggleEquivBtn(event, this)">Tengo piezas equivalentes</button>
+                </div>
+
+                <div class="piece-row" onclick="togglePiece(this)">
+                  <div class="piece-left">
+                    <div class="piece-check">✓</div>
+                    <div class="piece-thumb-slot has-img">
+                      <img src="assets/img/recursos_visuales/Group 2260.png" alt="Engranajes 8T y 24T" />
+                    </div>
+                    <div>
+                      <strong style="font-size:14.5px;">Engranajes 8T y 24T <span style="color:#6366F1;">×4</span></strong>
+                      <div style="font-size:12px; color:#64748B;">Transmisión y reducción</div>
+                      <span class="piece-tag">Ejes y engranajes Technic</span>
+                    </div>
+                  </div>
+                  <button class="btn-equiv" type="button" onclick="toggleEquivBtn(event, this)">Tengo piezas equivalentes</button>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:10px; margin-top:18px;">
+                <input type="text" id="customPieceInput" class="form-input" placeholder="Agrega una pieza de tu inventario (ej. Plate curva 1×4)" />
+                <button class="btn-back-lab" type="button" style="white-space:nowrap;" onclick="addCustomPiece()">+ Agregar</button>
+              </div>
+              <p style="font-size:12px; color:#64748B; margin:12px 0 0;">💡 Improvisar es parte del juego: una pieza parecida también cuenta.</p>
+            </div>
+
+            <div>
+              <div class="mobile-sync-card" id="mobileSyncCard">
+                <div style="font-size:24px; margin-bottom:8px;" id="mobileSyncIcon">📱</div>
+                <h3 style="margin:0 0 6px; font-size:18px; font-weight:900;" id="mobileSyncTitle">Conexión con app móvil</h3>
+                <p style="font-size:13px; opacity:0.92; margin:0 0 18px; line-height:1.45;" id="mobileSyncDesc">Apunta la cámara a tu mesa y Bond detecta qué piezas tienes disponibles.</p>
+
+                <div id="mobileUnlinkedActions">
+                  <button type="button" onclick="openQrModal()" style="width:100%; background:#FF551A; color:#fff; border:none; padding:13px 16px; border-radius:14px; font-weight:900; font-size:13.5px; cursor:pointer; font-family:inherit; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                    📷 Escanear mis piezas con la app móvil
+                  </button>
+                </div>
+
+                <div id="mobileLinkedActions" style="display:none;">
+                  <div class="linked-status-row">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="width:10px; height:10px; background:#4ADE80; border-radius:50%; display:inline-block;"></span>
+                      <strong style="font-size:13px;">Celular vinculado</strong>
+                    </div>
+                    <button type="button" class="btn-unlink-mini" onclick="unlinkMobileDevice()">Desvincular</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="workflow-card" style="padding:24px;">
+                <strong style="display:block; font-size:15.5px; margin-bottom:6px;">Casi listo</strong>
+                <p style="font-size:13px; color:#64748B; margin:0 0 18px; line-height:1.45;">Puedes construir aunque falten piezas: Bond te ayudará a sustituirlas.</p>
+                <button class="btn-primary-action" type="button" style="width:100%; margin-bottom:10px;" onclick="completeStage3()">Ir a construir y probar →</button>
+                <button type="button" onclick="goToStage(2)" style="width:100%; background:none; border:none; color:#64748B; font-weight:700; font-size:12.5px; cursor:pointer;">← Volver a técnicas</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= ETAPA 4: CONSTRUYE Y PRUEBA ================= -->
+        <div class="stage-panel" id="stage4">
+          <div class="workflow-card">
+            <div class="stage-header-title">
+              <div class="lab-kicker">ETAPA 4 DE 4</div>
+              <h2>Construye y prueba</h2>
+              <p>Documenta cada avance de "<span id="stage4ProjectName">tu MOC</span>" y recibe feedback de la IA de Bond directamente desde tu celular.</p>
+            </div>
+
+            <div class="mobile-banner-bar">
+              <div>
+                <strong style="display:block; font-size:15px;">📶 App móvil conectada — Cámara lista</strong>
+                <span style="font-size:12px; opacity:0.88;">iPhone de Hugo · Sincronización en vivo. Cada foto que tomes creará una iteración con análisis de IA.</span>
+              </div>
+              <button type="button" onclick="simulateNewIteration()" style="background:#FF551A; color:#fff; border:2px solid #0F172A; padding:11px 20px; border-radius:999px; font-weight:900; font-size:13px; cursor:pointer; box-shadow:2px 2px 0 #0F172A;">
+                📷 Toma una foto desde tu móvil
+              </button>
+            </div>
+
+            <div class="iteration-preview-grid">
+              <div>
+                <div class="iteration-main-photo" id="iterationMainContainer">
+                  <div class="iteration-empty-overlay" id="iterationEmptyState">
+                    <span>📸</span>
+                    <strong>Aún no has capturado iteraciones</strong>
+                    <p>Presiona "Toma una foto desde tu móvil" para registrar tu primer avance y activar el análisis de Bond.</p>
+                  </div>
+                  <img id="iterationMainImg" src="" alt="Iteración actual" style="display:none;" />
+                </div>
+                <div style="margin-top:14px;">
+                  <label class="form-label">Notas del constructor</label>
+                  <textarea class="form-input" rows="2" id="builderNotesInput" placeholder="Anota cómo se comporta tu construcción en esta iteración..."></textarea>
+                </div>
+              </div>
+
+              <!-- Tarjeta de Feedback IA articulada con estética Bond What! -->
+              <div class="bond-ai-feedback-panel">
+                <div class="bond-ai-header">
+                  <div class="bond-ai-avatar-group">
+                    <img src="assets/img/ilustraciones/mascota_rostro_2.png" alt="IA Bond" />
+                    <div>
+                      <strong style="display:block; font-size:16px; font-weight:900;">Feedback de Bond</strong>
+                      <span style="font-size:11.5px; color:rgba(255,255,255,0.75); font-weight:600;" id="aiStatusSubtitle">Esperando captura fotográfica</span>
+                    </div>
+                  </div>
+                  <span class="bond-ai-badge">✨ IA BOND</span>
+                </div>
+
+                <div id="aiFeedbackBody">
+                  <div class="ai-insight-card good">
+                    <span class="ai-insight-tag">● LISTO PARA ESCANEAR</span>
+                    <strong>Toma una foto de tu avance físico</strong>
+                    <p>Cuando captures tu primera iteración desde la app móvil, evaluaré la estabilidad, proporción y aplicación de tus técnicas.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Historial de iteraciones (Empieza vacío y se llena al tomar fotos) -->
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="font-size:15.5px;">Historial de iteraciones</strong>
+                <span style="font-size:12.5px; font-weight:800; color:#6366F1;" id="iterationsCountBadge">0 iteraciones registradas</span>
+              </div>
+
+              <div class="history-empty-box" id="historyEmptyBox">
+                Todavía no hay fotos en tu historial. Cada foto que tomes desde tu móvil aparecerá aquí en orden cronológico.
+              </div>
+              <div class="history-cards-grid" id="historyCardsGrid" style="display:none;"></div>
+            </div>
+
+            <div class="stage-footer-actions" style="justify-content:space-between;">
+              <span style="font-size:12.5px; color:#64748B; font-weight:600;" id="footerIterLabel">0 iteraciones documentadas</span>
+              <button class="btn-primary-action" type="button" onclick="openPublishModal()">Finalizar MOC y publicar en Comunidad →</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <!-- =======================================================
+       MODAL QR PARA ESCANEAR PIEZAS CON APP MÓVIL
+       ======================================================= -->
+  <div class="modal-backdrop" id="qrScanModal">
+    <div class="qr-modal-card">
+      <button class="modal-close-x" type="button" onclick="closeQrModal()">✕</button>
+      <div style="font-size:11px; font-weight:800; letter-spacing:1.2px; color:#2563EB; text-transform:uppercase;">VINCULACIÓN INSTANTÁNEA</div>
+      <h2 style="font-size:24px; font-weight:900; margin:6px 0 8px;">Escanea el código QR</h2>
+      <p style="font-size:13.5px; color:#64748B; margin:0; line-height:1.45;">Abre la cámara de tu celular o la app <strong>Bond What!</strong> para sincronizar tu mesa de piezas en tiempo real.</p>
+
+      <div class="qr-box-wrapper">
+        <div class="qr-scan-laser"></div>
+        <svg viewBox="0 0 100 100" fill="#0F172A">
+          <rect x="10" y="10" width="26" height="26" rx="4" fill="none" stroke="#0F172A" stroke-width="5"/>
+          <rect x="17" y="17" width="12" height="12" rx="2"/>
+          <rect x="64" y="10" width="26" height="26" rx="4" fill="none" stroke="#0F172A" stroke-width="5"/>
+          <rect x="71" y="17" width="12" height="12" rx="2"/>
+          <rect x="10" y="64" width="26" height="26" rx="4" fill="none" stroke="#0F172A" stroke-width="5"/>
+          <rect x="17" y="71" width="12" height="12" rx="2"/>
+          <rect x="44" y="12" width="6" height="6"/><rect x="52" y="20" width="6" height="6"/>
+          <rect x="44" y="28" width="6" height="12"/><rect x="12" y="44" width="12" height="6"/>
+          <rect x="30" y="44" width="8" height="8"/><rect x="46" y="46" width="10" height="10" fill="#2563EB"/>
+          <rect x="64" y="44" width="8" height="6"/><rect x="78" y="44" width="12" height="10"/>
+          <rect x="44" y="64" width="10" height="6"/><rect x="62" y="62" width="8" height="12"/>
+          <rect x="76" y="66" width="14" height="6"/><rect x="46" y="78" width="14" height="12"/>
+          <rect x="68" y="80" width="8" height="10"/><rect x="82" y="78" width="8" height="12"/>
+        </svg>
+      </div>
+
+      <div class="scan-progress-pill" id="qrStatusPill">
+        <span>📡</span> <span id="qrStatusText">Esperando lectura desde tu celular...</span>
+      </div>
+
+      <button class="btn-primary-action" type="button" id="btnConfirmQrLink" style="width:100%;" onclick="confirmQrLinked()">
+        ✓ Ya lo vinculé
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL PUBLICAR EN COMUNIDAD -->
+  <div class="modal-backdrop" id="publishModal">
+    <div class="publish-modal" id="publishStep1">
+      <button class="modal-close-x" type="button" onclick="closePublishModal()">✕</button>
+      <div class="modal-badge-icon" style="background:#6366F1;">👥</div>
+      <h2 style="font-size:24px; font-weight:900; margin:0 0 8px;">Publicar en Comunidad</h2>
+      <p style="font-size:13.5px; color:#64748B; margin:0 0 24px; line-height:1.5;">"<strong id="modalMocTitle">Tu MOC</strong>" se compartirá con sus iteraciones y las técnicas usadas.</p>
+      <button class="btn-primary-action" type="button" style="width:100%;" onclick="confirmPublish()">Publicar ahora</button>
+    </div>
+
+    <div class="publish-modal" id="publishStep2" style="display:none;">
+      <button class="modal-close-x" type="button" onclick="closePublishModal()">✕</button>
+      <div class="modal-badge-icon" style="background:#10B981;">✓</div>
+      <h2 style="font-size:26px; font-weight:900; margin:0 0 8px;">¡MOC publicado!</h2>
+      <p style="font-size:14px; color:#64748B; margin:0 0 24px;">Tu creación ya está visible para otros constructores.</p>
+      <button class="btn-primary-action" type="button" style="width:100%;" onclick="finishAndReturn()">Volver al Laboratorio</button>
+    </div>
+  </div>
+
+  <script>
+    var PROJECTS_DATA = {
+      explorador: {
+        title: 'Mi vehículo explorador',
+        category: 'Vehículo',
+        forma: 'Cuerpo bajo y ancho, cabina elevada al frente, seis ruedas todoterreno.',
+        funcion: 'Suspensión independiente y una pinza móvil que recoge muestras.',
+        reto: 'Que el brazo sostenga peso sin que se doble la unión del chasis.',
+        img: 'assets/img/recursos_visuales/mi_vehiculo_explorador.jpg',
+        startStage: 3
+      },
+      moai: {
+        title: 'Moai',
+        category: 'Arquitectura / Escenario',
+        forma: 'Busto monolítico alargado con rasgos geométricos marcados y base rocosa.',
+        funcion: 'Escultura de exhibición con inclinación sutil en la cabeza.',
+        reto: 'Lograr ángulos faciales naturales usando técnicas SNOT sin huecos visibles.',
+        img: 'assets/img/recursos_visuales/moai.jpg',
+        startStage: 1
+      },
+      edificio: {
+        title: 'Edificio',
+        category: 'Arquitectura / Escenario',
+        forma: 'Fachada modular de tres niveles con ventanales y detalles ornamentales.',
+        funcion: 'Pisos desmontables para acceder al interior amoblado.',
+        reto: 'Mantener alineación perfecta entre módulos apilables.',
+        img: 'assets/img/recursos_visuales/edificio.jpg',
+        startStage: 2
+      },
+      nuevo: {
+        title: '',
+        category: '',
+        forma: '',
+        funcion: '',
+        reto: '',
+        img: 'assets/img/recursos_visuales/mi_vehiculo_explorador.jpg',
+        startStage: 1
+      }
+    };
+
+    var selectedTechs = [];
+    var currentProjectKey = 'explorador';
+    var capturedIterations = [];
+
+    function openProject(key) {
+      currentProjectKey = key;
+      var data = PROJECTS_DATA[key] || PROJECTS_DATA.nuevo;
+      document.getElementById('projTitleInput').value = data.title;
+      document.getElementById('qForma').value = data.forma;
+      document.getElementById('qFuncion').value = data.funcion;
+      document.getElementById('qReto').value = data.reto;
+
+      document.querySelectorAll('#categoryGrid .scale-opt').forEach(function(el) {
+        el.classList.remove('selected');
+        if (data.category && el.dataset.cat === data.category) {
+          el.classList.add('selected');
+        }
+      });
+
+      for (var i = 1; i <= 4; i++) {
+        var tab = document.getElementById('stepTab' + i);
+        var num = document.getElementById('stepNum' + i);
+        tab.classList.remove('done', 'active');
+        num.textContent = i;
+        if (i < data.startStage) {
+          tab.classList.add('done');
+          num.textContent = '✓';
+        }
+      }
+
+      // Reinicia el historial de iteraciones al abrir un proyecto desde cero
+      resetIterationsUI();
+
+      document.getElementById('labMainView').style.display = 'none';
+      document.getElementById('workflowView').classList.add('active');
+      goToStage(data.startStage);
+      window.scrollTo(0, 0);
+    }
+
+    function closeWorkflow() {
+      document.getElementById('workflowView').classList.remove('active');
+      document.getElementById('labMainView').style.display = 'block';
+      window.scrollTo(0, 0);
+    }
+
+    function goToStage(stageNum) {
+      var projName = document.getElementById('projTitleInput').value.trim() || 'tu nuevo MOC';
+      document.getElementById('planProjectLabel').textContent = projName;
+      document.getElementById('stage4ProjectName').textContent = projName;
+
+      document.querySelectorAll('.stage-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById('stage' + stageNum).classList.add('active');
+
+      for (var i = 1; i <= 4; i++) {
+        var tab = document.getElementById('stepTab' + i);
+        tab.classList.remove('active');
+        if (i === stageNum) tab.classList.add('active');
+      }
+      window.scrollTo(0, 0);
+    }
+
+    function selectCategory(el) {
+      document.querySelectorAll('#categoryGrid .scale-opt').forEach(function(c) { c.classList.remove('selected'); });
+      el.classList.add('selected');
+    }
+
+    function appendChip(textareaId, text) {
+      var ta = document.getElementById(textareaId);
+      ta.value = ta.value.trim() ? ta.value.trim() + ', ' + text.toLowerCase() : text;
+      ta.focus();
+    }
+
+    function useAssistantPrompt(btn) {
+      document.getElementById('assistantTipBox').innerHTML =
+        '✨ <strong>Reflexión Bond:</strong> "' + btn.textContent + '" — Anota tu respuesta rápida en las tarjetas de la izquierda.';
+    }
+
+    function completeStage1() {
+      var titleVal = document.getElementById('projTitleInput').value.trim();
+      if (!titleVal) {
+        document.getElementById('projTitleInput').focus();
+        document.getElementById('projTitleInput').style.borderColor = '#FF3D00';
+        return;
+      }
+      document.getElementById('projTitleInput').style.borderColor = '#CBD5E1';
+      document.getElementById('stepTab1').classList.add('done');
+      document.getElementById('stepNum1').textContent = '✓';
+      goToStage(2);
+    }
+
+    /* --- ETAPA 2: TÉCNICAS --- */
+    function toggleTech(btn) {
+      var card = btn.closest('.tech-card');
+      var name = card.dataset.tech;
+      var idx = selectedTechs.indexOf(name);
+
+      if (idx === -1) {
+        selectedTechs.push(name);
+        card.classList.add('selected');
+        btn.textContent = '✓ En tu plan';
+      } else {
+        selectedTechs.splice(idx, 1);
+        card.classList.remove('selected');
+        btn.textContent = '+ Añadir al plan';
+      }
+      renderSelectedTechs();
+    }
+
+    function removeTechFromPlan(name) {
+      var idx = selectedTechs.indexOf(name);
+      if (idx !== -1) selectedTechs.splice(idx, 1);
+      document.querySelectorAll('#techniquesGrid .tech-card').forEach(function(c) {
+        if (c.dataset.tech === name) {
+          c.classList.remove('selected');
+          c.querySelector('.btn-add-tech').textContent = '+ Añadir al plan';
+        }
+      });
+      renderSelectedTechs();
+    }
+
+    function renderSelectedTechs() {
+      var list = document.getElementById('selectedTechList');
+      var countEl = document.getElementById('selectedTechCount');
+      var nextBtn = document.getElementById('btnToStage3');
+      countEl.textContent = selectedTechs.length;
+
+      if (selectedTechs.length === 0) {
+        list.innerHTML = '<div style="border:2px dashed #CBD5E1; border-radius:16px; padding:26px 16px; text-align:center; font-size:13px; color:#64748B; font-weight:600; margin-bottom:16px; background:#F8FAFC;">Selecciona al menos una técnica de la izquierda para armar tu plan constructivo.</div>';
+        nextBtn.disabled = true;
+        return;
+      }
+
+      nextBtn.disabled = false;
+      var html = '';
+      selectedTechs.forEach(function(t, i) {
+        html += '<div class="plan-selected-item">' +
+                  '<div class="plan-selected-top">' +
+                    '<div class="plan-tech-pill"><span class="plan-tech-num">' + (i + 1) + '</span><span>' + t + '</span></div>' +
+                    '<button type="button" class="btn-remove-plan-tech" title="Quitar técnica" onclick="removeTechFromPlan(\'' + t + '\')">✕</button>' +
+                  '</div>' +
+                  '<input type="text" placeholder="¿En qué parte del modelo la usarás?" />' +
+                '</div>';
+      });
+      list.innerHTML = html;
+    }
+
+    function filterTechs(cat, pill) {
+      document.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      document.querySelectorAll('#techniquesGrid .tech-card').forEach(function(c) {
+        c.style.display = (cat === 'all' || c.dataset.cat === cat) ? 'flex' : 'none';
+      });
+    }
+
+    function completeStage2() {
+      document.getElementById('stepTab2').classList.add('done');
+      document.getElementById('stepNum2').textContent = '✓';
+      goToStage(3);
+    }
+
+    /* --- ETAPA 3: PIEZAS, EQUIVALENTES Y VINCULACIÓN QR --- */
+    function togglePiece(row) {
+      row.classList.toggle('checked');
+      if (row.classList.contains('checked')) {
+        row.classList.remove('equiv-active');
+        var btn = row.querySelector('.btn-equiv');
+        if (btn) {
+          btn.classList.remove('selected');
+          btn.textContent = 'Tengo piezas equivalentes';
+        }
+      }
+      updatePiecesCount();
+    }
+
+    function toggleEquivBtn(e, btn) {
+      e.stopPropagation();
+      var row = btn.closest('.piece-row');
+      btn.classList.toggle('selected');
+      if (btn.classList.contains('selected')) {
+        row.classList.remove('checked');
+        row.classList.add('equiv-active');
+        btn.textContent = '✓ Usando equivalentes';
+      } else {
+        row.classList.remove('equiv-active');
+        btn.textContent = 'Tengo piezas equivalentes';
+      }
+      updatePiecesCount();
+    }
+
+    function updatePiecesCount() {
+      var total = document.querySelectorAll('#piecesChecklist .piece-row').length;
+      var done = document.querySelectorAll('#piecesChecklist .piece-row.checked, #piecesChecklist .piece-row.equiv-active').length;
+      document.getElementById('piecesReadyCount').textContent = done + ' de ' + total + ' listas';
+    }
+
+    function addCustomPiece() {
+      var inp = document.getElementById('customPieceInput');
+      var val = inp.value.trim();
+      if (!val) return;
+      var div = document.createElement('div');
+      div.className = 'piece-row checked';
+      div.onclick = function() { togglePiece(div); };
+      div.innerHTML =
+        '<div class="piece-left">' +
+          '<div class="piece-check">✓</div>' +
+          '<div class="piece-thumb-slot" title="Espacio para foto de la pieza"><span>Foto<br>pieza</span></div>' +
+          '<div>' +
+            '<strong style="font-size:14.5px;">' + val + '</strong>' +
+            '<div style="font-size:12px; color:#64748B;">Agregada de tu inventario</div>' +
+            '<span class="piece-tag">Inventario personal</span>' +
+          '</div>' +
+        '</div>' +
+        '<button class="btn-equiv" type="button" onclick="toggleEquivBtn(event, this)">Tengo piezas equivalentes</button>';
+      document.getElementById('piecesChecklist').appendChild(div);
+      inp.value = '';
+      updatePiecesCount();
+    }
+
+    var qrTimer = null;
+    function openQrModal() {
+      document.getElementById('qrStatusText').textContent = 'Escaneando mesa de piezas en vivo...';
+      document.getElementById('qrScanModal').classList.add('open');
+      clearTimeout(qrTimer);
+      qrTimer = setTimeout(function() {
+        document.getElementById('qrStatusText').textContent = '¡iPhone de Hugo detectado! Listo para confirmar.';
+      }, 1800);
+    }
+
+    function closeQrModal() {
+      clearTimeout(qrTimer);
+      document.getElementById('qrScanModal').classList.remove('open');
+    }
+
+    function confirmQrLinked() {
+      closeQrModal();
+      var card = document.getElementById('mobileSyncCard');
+      card.classList.add('linked');
+      document.getElementById('mobileSyncIcon').textContent = '✅';
+      document.getElementById('mobileSyncTitle').textContent = 'App móvil sincronizada';
+      document.getElementById('mobileSyncDesc').textContent = 'iPhone de Hugo conectado. Piezas detectadas en tu mesa automáticamente.';
+      document.getElementById('mobileUnlinkedActions').style.display = 'none';
+      document.getElementById('mobileLinkedActions').style.display = 'block';
+
+      document.querySelectorAll('#piecesChecklist .piece-row').forEach(function(r) {
+        r.classList.remove('equiv-active');
+        r.classList.add('checked');
+      });
+      updatePiecesCount();
+    }
+
+    function unlinkMobileDevice() {
+      var card = document.getElementById('mobileSyncCard');
+      card.classList.remove('linked');
+      document.getElementById('mobileSyncIcon').textContent = '📱';
+      document.getElementById('mobileSyncTitle').textContent = 'Conexión con app móvil';
+      document.getElementById('mobileSyncDesc').textContent = 'Apunta la cámara a tu mesa y Bond detecta qué piezas tienes disponibles.';
+      document.getElementById('mobileUnlinkedActions').style.display = 'block';
+      document.getElementById('mobileLinkedActions').style.display = 'none';
+    }
+
+    function completeStage3() {
+      document.getElementById('stepTab3').classList.add('done');
+      document.getElementById('stepNum3').textContent = '✓';
+      goToStage(4);
+    }
+
+    /* --- ETAPA 4: HISTORIAL DINÁMICO DE ITERACIONES + FEEDBACK IA --- */
+    var SAMPLE_CAPTURES = [
+      {
+        label: 'Iteración 1: Base estructural',
+        note: 'Chasis inicial ensamblado. Verificando proporción y rigidez antes de agregar detalles.',
+        goodTitle: 'Base sólida y bien nivelada',
+        goodText: 'La distribución de studs soporta el peso central sin flexión lateral en las uniones.',
+        warnTitle: 'Refuerza los puntos de apoyo',
+        warnText: 'Añade un brick con studs laterales bajo el frente para preparar el anclaje de la siguiente etapa.'
+      },
+      {
+        label: 'Iteración 2: Mecanismo y volumen',
+        note: 'Integración de ejes y módulos laterales. El movimiento responde sin fricción excesiva.',
+        goodTitle: 'El mecanismo gira con suavidad',
+        goodText: 'La alineación de los ejes evita atascos y mantiene el centro de gravedad equilibrado.',
+        warnTitle: 'Alerta estructural: voladizo frontal',
+        warnText: 'La sección delantera sobresale 4 studs sin soporte inferior. Refuérzala con la técnica SNOT elegida.'
+      },
+      {
+        label: 'Iteración 3: Acabados y silueta',
+        note: 'Detalles exteriores completados y pruebas finales de estabilidad.',
+        goodTitle: 'Silueta limpia y uniones ocultas',
+        goodText: 'El uso de tiles y SNOT lateral elimina studs expuestos innecesarios y mejora el acabado.',
+        warnTitle: 'Listo para validación final',
+        warnText: 'Haz una última prueba de manipulación antes de compartir tu MOC con la comunidad.'
+      }
+    ];
+
+    function resetIterationsUI() {
+      capturedIterations = [];
+      document.getElementById('iterationEmptyState').style.display = 'block';
+      document.getElementById('iterationMainImg').style.display = 'none';
+      document.getElementById('builderNotesInput').value = '';
+      document.getElementById('historyEmptyBox').style.display = 'block';
+      document.getElementById('historyCardsGrid').style.display = 'none';
+      document.getElementById('historyCardsGrid').innerHTML = '';
+      document.getElementById('iterationsCountBadge').textContent = '0 iteraciones registradas';
+      document.getElementById('footerIterLabel').textContent = '0 iteraciones documentadas';
+      document.getElementById('aiStatusSubtitle').textContent = 'Esperando captura fotográfica';
+      document.getElementById('aiFeedbackBody').innerHTML =
+        '<div class="ai-insight-card good">' +
+          '<span class="ai-insight-tag">● LISTO PARA ESCANEAR</span>' +
+          '<strong>Toma una foto de tu avance físico</strong>' +
+          '<p>Cuando captures tu primera iteración desde la app móvil, evaluaré la estabilidad, proporción y aplicación de tus técnicas.</p>' +
+        '</div>';
+    }
+
+    function simulateNewIteration() {
+      var data = PROJECTS_DATA[currentProjectKey] || PROJECTS_DATA.explorador;
+      var idx = capturedIterations.length;
+      var preset = SAMPLE_CAPTURES[idx % SAMPLE_CAPTURES.length];
+      var iterNumber = idx + 1;
+
+      var item = {
+        num: iterNumber,
+        title: 'Iteración ' + iterNumber + ': ' + preset.label.split(': ')[1],
+        time: 'Recién capturada',
+        img: data.img,
+        note: preset.note,
+        goodTitle: preset.goodTitle,
+        goodText: preset.goodText,
+        warnTitle: preset.warnTitle,
+        warnText: preset.warnText
+      };
+
+      capturedIterations.push(item);
+      renderIterationsHistory(capturedIterations.length - 1);
+    }
+
+    function renderIterationsHistory(activeIndex) {
+      var activeItem = capturedIterations[activeIndex];
+      if (!activeItem) return;
+
+      document.getElementById('iterationEmptyState').style.display = 'none';
+      var mainImg = document.getElementById('iterationMainImg');
+      mainImg.src = activeItem.img;
+      mainImg.style.display = 'block';
+      document.getElementById('builderNotesInput').value = activeItem.note;
+
+      // Actualizar Feedback IA
+      document.getElementById('aiStatusSubtitle').textContent = 'Analizando ' + activeItem.title;
+      document.getElementById('aiFeedbackBody').innerHTML =
+        '<div class="ai-insight-card good">' +
+          '<span class="ai-insight-tag">✔ LO QUE FUNCIONA BIEN</span>' +
+          '<strong>' + activeItem.goodTitle + '</strong>' +
+          '<p>' + activeItem.goodText + '</p>' +
+        '</div>' +
+        '<div class="ai-insight-card warn">' +
+          '<span class="ai-insight-tag">⚠ PUNTO DE MEJORA · ALERTA ESTRUCTURAL</span>' +
+          '<strong>' + activeItem.warnTitle + '</strong>' +
+          '<p>' + activeItem.warnText + '</p>' +
+        '</div>';
+
+      // Actualizar tarjetas del historial
+      document.getElementById('historyEmptyBox').style.display = 'none';
+      var grid = document.getElementById('historyCardsGrid');
+      grid.style.display = 'grid';
+
+      var html = '';
+      capturedIterations.forEach(function(it, i) {
+        var cls = (i === activeIndex) ? 'history-card active' : 'history-card';
+        html += '<div class="' + cls + '" onclick="renderIterationsHistory(' + i + ')">' +
+                  '<img src="' + it.img + '" alt="' + it.title + '" />' +
+                  '<div style="padding:10px;">' +
+                    '<strong style="display:block; font-size:12.5px;">' + it.title + '</strong>' +
+                    '<small style="color:#64748B;">' + it.time + '</small>' +
+                  '</div>' +
+                '</div>';
+      });
+      grid.innerHTML = html;
+
+      var countTxt = capturedIterations.length + (capturedIterations.length === 1 ? ' iteración' : ' iteraciones');
+      document.getElementById('iterationsCountBadge').textContent = countTxt + ' registradas';
+      document.getElementById('footerIterLabel').textContent = countTxt + ' documentadas';
+    }
+
+    function openPublishModal() {
+      var title = document.getElementById('projTitleInput').value.trim() || 'Mi nuevo MOC';
+      document.getElementById('modalMocTitle').textContent = title;
+      document.getElementById('publishStep1').style.display = 'block';
+      document.getElementById('publishStep2').style.display = 'none';
+      document.getElementById('publishModal').classList.add('open');
+    }
+
+    function closePublishModal() {
+      document.getElementById('publishModal').classList.remove('open');
+    }
+
+    function confirmPublish() {
+      document.getElementById('publishStep1').style.display = 'none';
+      document.getElementById('publishStep2').style.display = 'block';
+    }
+
+    function finishAndReturn() {
+      closePublishModal();
+      closeWorkflow();
+    }
+
+    function saveDraftToast() {
+      alert('💾 Borrador guardado en tu Laboratorio.');
+    }
+  </script>
+</body>
+</html>

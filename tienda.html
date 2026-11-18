@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tienda Oficial — Bond What!</title>
+  <link rel="stylesheet" href="css/estilo.css" />
+  <style>
+    /* Botón carrito en navbar */
+    .cart-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #FFD600;
+      color: #0F172A;
+      font-weight: 800;
+      font-size: 13.5px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+    .cart-pill-btn:hover {
+      transform: scale(1.06);
+      box-shadow: 0 4px 12px rgba(255, 214, 0, 0.45);
+    }
+
+    /* Banner Hero Tienda */
+    .shop-hero-wrapper {
+      padding: 24px 0 32px 0;
+    }
+    .shop-hero-banner {
+      background: linear-gradient(95deg, #FF3D00 0%, #FF6B4A 52%, #F99BB4 100%);
+      border-radius: 28px;
+      padding: 56px 64px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 24px;
+      color: #FFFFFF;
+      position: relative;
+      overflow: hidden;
+    }
+    .shop-hero-banner h1 {
+      font-size: 52px;
+      line-height: 1.06;
+      font-weight: 900;
+      margin: 0 0 14px 0;
+      color: #FFFFFF;
+    }
+    .shop-hero-banner p {
+      font-size: 16.5px;
+      line-height: 1.5;
+      margin: 0 0 28px 0;
+      color: rgba(255, 255, 255, 0.94);
+    }
+    .shop-hero-btn {
+      display: inline-block;
+      background-color: #FFFFFF;
+      color: #FF3D00;
+      font-weight: 800;
+      font-size: 14.5px;
+      padding: 13px 28px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .shop-hero-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .shop-hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .shop-hero-visual img {
+      width: 100%;
+      max-width: 310px;
+      height: auto;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.18));
+      transition: transform 0.3s ease;
+    }
+    .shop-hero-banner:hover .shop-hero-visual img {
+      transform: scale(1.04) rotate(-2deg);
+    }
+
+    /* Filtros de categoría */
+    .shop-filters {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 10px 0 36px 0;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      background: transparent;
+      border: none;
+      padding: 9px 22px;
+      border-radius: 999px;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .filter-pill:hover {
+      background: #F1F5F9;
+      color: #0F172A;
+      transform: scale(1.04);
+    }
+    .filter-pill.active {
+      background: #0F172A;
+      color: #FFFFFF;
+    }
+
+    /* Grilla de 4 productos con interactividad hover */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 56px;
+    }
+    .product-card {
+      background: #FFFFFF;
+      border: 1px solid #E5E9F2;
+      border-radius: 22px;
+      padding: 16px;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.10);
+      border-color: #CBD5E1;
+    }
+    .product-img-box {
+      width: 100%;
+      height: 220px;
+      border-radius: 16px;
+      background-color: #F3F5F9;
+      overflow: hidden;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .product-card:hover .product-img-box img {
+      transform: scale(1.06);
+    }
+    .product-tag {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #FF4D15;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .product-title {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 10px 0;
+    }
+    .product-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+    .product-price {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: #334155;
+    }
+    .add-cart-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: #FFD600;
+      border: 2px solid #0F172A;
+      color: #0F172A;
+      font-size: 18px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    .add-cart-circle:hover {
+      transform: scale(1.15);
+      background-color: #FFE44D;
+    }
+
+    /* Sección Promo Bento ULTIMATE SALE */
+    .sale-bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 24px;
+      margin-bottom: 80px;
+      align-items: stretch;
+    }
+    .bento-tall-card {
+      border-radius: 24px;
+      overflow: hidden;
+      background-color: #F3F5F9;
+      min-height: 460px;
+      position: relative;
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+    }
+    .bento-tall-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+    }
+    .bento-tall-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .bento-yellow-card {
+      background-color: #FFE600;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .bento-center-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .bento-mini-banner {
+      height: 115px;
+      border-radius: 20px;
+      overflow: hidden;
+      background-color: #F3F5F9;
+      transition: transform 0.25s ease;
+    }
+    .bento-mini-banner:hover {
+      transform: scale(1.02);
+    }
+    .bento-mini-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .ultimate-sale-box {
+      text-align: center;
+      padding: 16px 12px;
+    }
+    .ultimate-sale-box .sale-kicker {
+      font-size: 16px;
+      font-weight: 900;
+      color: #FF3D00;
+      letter-spacing: 2px;
+      margin-bottom: 2px;
+    }
+    .ultimate-sale-box .sale-outline {
+      font-size: 68px;
+      line-height: 0.95;
+      font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 2.5px #FF3D00;
+      margin: 0 0 10px 0;
+      letter-spacing: 1px;
+    }
+    .ultimate-sale-box .sale-sub {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0047FF;
+      margin-bottom: 16px;
+    }
+    .sale-cta-btn {
+      display: inline-block;
+      background-color: #FF3D00;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 12px 30px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    .sale-cta-btn:hover {
+      transform: scale(1.06);
+      background-color: #E03500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. NAVBAR (Idéntico al Home, con Tienda activo y carrito) -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/logos/logo-bondwhat_1.png" alt="Bond What!" onerror="this.outerHTML='<strong style=\'color:#0047FF;font-size:22px;\'>BOND WHAT!</strong>'" />
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="aprender.html">Aprender</a>
+        <a href="tienda.html" class="active">Tienda</a>
+        <a href="nosotros.html">Nosotros</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="cart-button" class="cart-pill-btn" title="Ver carrito">
+          🛒 <span id="cart-count">0</span>
+        </button>
+        <a href="registro.html" class="link-register">Regístrate</a>
+        <a href="ingresa.html" class="btn-pill-blue">Ingresa</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. BANNER HERO TIENDA -->
+  <section class="shop-hero-wrapper">
+    <div class="container">
+      <div class="shop-hero-banner">
+        <div>
+          <h1>Crear con estilo<br>nunca fue tan fácil.</h1>
+          <p>Diseñados para llevar tu curiosidad fuera de la pantalla.</p>
+          <a href="#catalogo-productos" class="shop-hero-btn">Ver colección</a>
+        </div>
+        <div class="shop-hero-visual">
+          <img src="assets/img/ilustraciones/icono_merch.png" alt="Colección Merch Bond What" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. FILTROS Y CATÁLOGO DE PRODUCTOS -->
+  <section id="catalogo-productos">
+    <div class="container">
+      
+      <!-- Pestañas de filtro -->
+      <div class="shop-filters">
+        <button class="filter-pill active" data-filter="todo">Todo</button>
+        <button class="filter-pill" data-filter="ropa">Ropa</button>
+        <button class="filter-pill" data-filter="accesorios">Accesorios</button>
+        <button class="filter-pill" data-filter="toys">Toys</button>
+      </div>
+
+      <!-- 4 Cards con foto real, precio, botón + y efecto hover scale -->
+      <div class="products-grid">
+        
+        <!-- Producto 1: Gorra -->
+        <div class="product-card" data-category="ropa">
+          <div>
+            <div class="product-img-box">
+              <img src="assets/img/recursos_visuales/hat.png" alt="Gorra Constructor Bond What" />
+            </div>
+            <div class="product-tag">EDICIÓN BOND</div>
+            <h3 class="product-title">Gorra Constructor</h3>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$15</span>
+            <button class="add-cart-circle" onclick="agregarAlCarrito('Gorra Constructor')" title="Agregar al carrito">+</button>
+          </div>
+        </div>
+
+        <!-- Producto 2: Camiseta -->
+        <div class="product-card" data-category="ropa">
+          <div>
+            <div class="product-img-box">
+              <img src="assets/img/recursos_visuales/shirt.png" alt="Camiseta de aventuras Bond What" />
+            </div>
+            <div class="product-tag">EDICIÓN BOND</div>
+            <h3 class="product-title">Camiseta de aventuras</h3>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$30</span>
+            <button class="add-cart-circle" onclick="agregarAlCarrito('Camiseta de aventuras')" title="Agregar al carrito">+</button>
+          </div>
+        </div>
+
+        <!-- Producto 3: Case de celular -->
+        <div class="product-card" data-category="accesorios">
+          <div>
+            <div class="product-img-box">
+              <img src="assets/img/recursos_visuales/case.png" alt="Case de celular Bond What" />
+            </div>
+            <div class="product-tag">EDICIÓN BOND</div>
+            <h3 class="product-title">Case de celular</h3>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$18</span>
+            <button class="add-cart-circle" onclick="agregarAlCarrito('Case de celular')" title="Agregar al carrito">+</button>
+          </div>
+        </div>
+
+        <!-- Producto 4: Tote Bag -->
+        <div class="product-card" data-category="accesorios">
+          <div>
+            <div class="product-img-box">
+              <img src="assets/img/recursos_visuales/totebag.png" alt="Tote MOC maker Bond What" />
+            </div>
+            <div class="product-tag">EDICIÓN BOND</div>
+            <h3 class="product-title">Tote MOC maker</h3>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price">$20</span>
+            <button class="add-cart-circle" onclick="agregarAlCarrito('Tote MOC maker')" title="Agregar al carrito">+</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 4. GRILLA INFERIOR ULTIMATE SALE -->
+      <div class="sale-bento-grid">
+        
+        <!-- Columna izquierda: Tote bag vertical -->
+        <div class="bento-tall-card">
+          <img src="assets/img/recursos_visuales/totebag_vertical.png" alt="Tote Bag Bond What!" />
+        </div>
+
+        <!-- Columna central: Case arriba + ULTIMATE SALE + Bloques abajo -->
+        <div class="bento-center-col">
+          <div class="bento-mini-banner">
+            <img src="assets/img/recursos_visuales/case_horizontal.png" alt="Case Bond What" />
+          </div>
+
+          <div class="ultimate-sale-box">
+            <div class="sale-kicker">ULTIMATE</div>
+            <div class="sale-outline">SALE</div>
+            <div class="sale-sub">Nueva colección</div>
+            <a href="#catalogo-productos" class="sale-cta-btn">Comprar ahora</a>
+          </div>
+
+          <div class="bento-mini-banner">
+            <img src="assets/img/recursos_visuales/card_crea.png" alt="Construcción creativa Bond What" />
+          </div>
+        </div>
+
+        <!-- Columna derecha: Card amarilla con foto -->
+        <div class="bento-tall-card bento-yellow-card">
+          <img src="assets/img/recursos_visuales/foto_bond_what_personas.png" alt="Hoodie Colección Bond What" style="object-fit: contain; padding-top: 24px;" />
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. FOOTER AZUL (Idéntico al Home y Aprender) -->
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <img src="assets/img/logos/logo_bond_what_2.png" alt="Bond What!" onerror="this.outerHTML='<h3 style=\'font-size:24px;margin-bottom:12px;\'>BOND WHAT!</h3>'" />
+        <h4>No es solo construir.</h4>
+        <p>Es entender cómo pensar con tus propias ideas y llevar tu creatividad al límite.</p>
+        <div class="footer-copy">© 2026 Bond What! — Todos los derechos reservados.</div>
+      </div>
+
+      <div class="footer-links">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aprender.html">Aprender</a></li>
+          <li><a href="tienda.html">Tienda</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="web_app_inicio.html">Web App</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-right">
+        <div class="social-icons">
+          <a href="#" class="social-btn">𝕏</a>
+          <a href="#" class="social-btn">f</a>
+          <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="social-btn">▶</a>
+          <a href="#" class="social-btn">📷</a>
+        </div>
+
+        <div class="footer-yt-card">
+          <h5>Empieza donde empieza todo.</h5>
+          <p>Suscríbete a nuestro canal de YouTube para ver retos semanales y técnicas en acción.</p>
+          <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="btn-orange">Suscribirme</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app_funcionamiento.js"></script>
+  <script>
+    // Contador interactivo del carrito
+    let totalCarrito = 0;
+    function agregarAlCarrito(nombreProducto) {
+      totalCarrito++;
+      const badge = document.getElementById('cart-count');
+      const btn = document.getElementById('cart-button');
+      if (badge) badge.textContent = totalCarrito;
+      if (btn) {
+        btn.style.transform = 'scale(1.18)';
+        setTimeout(() => { btn.style.transform = 'scale(1)'; }, 200);
+      }
+    }
+
+    // Filtro interactivo por categorías (Todo, Ropa, Accesorios, Toys)
+    const filterButtons = document.querySelectorAll('.filter-pill');
+    const productCards = document.querySelectorAll('.product-card');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const category = btn.getAttribute('data-filter');
+
+        productCards.forEach((card) => {
+          if (category === 'todo' || card.getAttribute('data-category') === category) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

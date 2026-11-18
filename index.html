@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bond What! — Deja de seguir instrucciones</title>
+  <link rel="stylesheet" href="css/estilo.css" />
+  <style>
+    /* Estilos específicos para el carrusel horizontal de comentarios y enlaces a YouTube */
+    .yt-avatar-link {
+      display: inline-block;
+      margin-top: -58px; /* La mitad exacta de 116px para quedar centrado sobre el borde gris */
+      position: relative;
+      z-index: 15;
+      transition: transform 0.25s ease;
+      cursor: pointer;
+    }
+    .yt-avatar-link:hover {
+      transform: scale(1.08);
+    }
+    .yt-avatar-custom {
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      padding: 4px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .yt-avatar-custom img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .comments-carousel-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 16px 5% 28px 5%;
+      margin-top: 28px;
+      display: flex;
+      gap: 24px;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: #CBD5E1 transparent;
+      cursor: grab;
+    }
+    .comments-carousel-wrapper::-webkit-scrollbar {
+      height: 7px;
+    }
+    .comments-carousel-wrapper::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+    .comment-card-link {
+      text-decoration: none;
+      color: inherit;
+      flex: 0 0 390px;
+      background: #FFFFFF;
+      border-radius: 20px;
+      padding: 26px 28px;
+      text-align: left;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+      border: 1px solid #E5E9F2;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .comment-card-link:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(0, 71, 255, 0.12);
+      border-color: #B8C4FF;
+    }
+    .comment-card-link .comment-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .comment-card-link .comment-user {
+      font-weight: 700;
+      font-size: 16px;
+      color: #111827;
+    }
+    .comment-card-link p {
+      font-size: 15.5px;
+      line-height: 1.55;
+      color: #4B5563;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. NAVBAR -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/logos/logo-bondwhat_1.png" alt="Bond What!" onerror="this.outerHTML='<strong style=\'color:#0047FF;font-size:22px;\'>BOND WHAT!</strong>'" />
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="active">Home</a>
+        <a href="aprender.html">Aprender</a>
+        <a href="tienda.html">Tienda</a>
+        <a href="nosotros.html">Nosotros</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="registro.html" class="link-register">Regístrate</a>
+        <a href="ingresa.html" class="btn-pill-blue">Ingresa</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. HERO BANNER -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-card">
+        <div class="hero-visual">
+          <img src="assets/img/ilustraciones/pandas_banner_escenario.png" alt="Pandas Bond What construyendo" />
+        </div>
+        <div class="hero-content">
+          <h1>Deja de seguir<br>instrucciones.</h1>
+          <p>Explora cómo construir y lleva tus MOCs al siguiente nivel. Aprende a pensar con bloques y crea como construyen los más capaces.</p>
+          <a href="registro.html" class="btn-pill-white">Comenzar ahora →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. AQUÍ LA CURIOSIDAD SE CONVIERTE EN CONTENIDO -->
+  <section class="pillars-section">
+    <div class="container">
+      <h2>Aquí la curiosidad se convierte en contenido</h2>
+      <p class="subtitle">Explora ideas, retos y piezas creadas para inspirar.</p>
+
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <img src="assets/img/ilustraciones/icono_brick.png" alt="Aprende a construir" />
+          <h3>Aprende a construir</h3>
+          <p>Domina técnicas reales para que tus creaciones sean firmes y originales.</p>
+          <a href="aprender.html" class="btn-pill-soft">Explorar</a>
+        </div>
+
+        <div class="pillar-card">
+          <img src="assets/img/ilustraciones/icono_canal.png" alt="Retos y videos" />
+          <h3>Retos que te inspiran</h3>
+          <p>Mira cómo resolvemos desafíos creativos sin usar ningún manual.</p>
+          <a href="nosotros.html" class="btn-pill-soft">Ver canal</a>
+        </div>
+
+        <div class="pillar-card">
+          <img src="assets/img/ilustraciones/icono_merch.png" alt="Merch Bond What" />
+          <h3>Estilo constructor</h3>
+          <p>Diseños pensados para llevar tu curiosidad fuera de la pantalla.</p>
+          <a href="tienda.html" class="btn-pill-soft">Ver tienda</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ¿QUIÉNES SOMOS BOND WHAT? -->
+  <section class="about-section" style="padding: 0; overflow: hidden; background-color: #f8f9fc;">
+    <div class="container about-grid" style="display: grid; grid-template-columns: 48% 52%; align-items: center; gap: 20px; max-width: 1200px; margin: 0 auto;">
+      
+      <!-- Composición izquierda a ras arriba y abajo sin recortes -->
+      <div class="about-photo" style="position: relative; display: flex; justify-content: center; align-items: flex-end; min-height: 460px; overflow: visible; padding-top: 20px;">
+        <!-- Columna izquierda de círculos (bloque, fuego, panda) -->
+        <img src="assets/img/ilustraciones/banner_iconos.png" alt="Iconos Bond What izquierda" 
+             style="position: absolute; left: 4%; bottom: 0; width: 155px; z-index: 1; pointer-events: none;" />
+        
+        <!-- Columna derecha de círculos (cerebro, isla, libro) pegada a ras arriba -->
+        <img src="assets/img/ilustraciones/banner_iconos_2.png" alt="Iconos Bond What derecha" 
+             style="position: absolute; left: 37%; top: 0; width: 155px; z-index: 1; pointer-events: none;" />
+        
+        <!-- Foto de los fundadores al frente a ras abajo -->
+        <img src="assets/img/recursos_visuales/foto_bond_what_personas.png" alt="Fundadores de Bond What" 
+             style="position: relative; z-index: 2; width: 100%; max-width: 420px; height: auto; display: block; margin-left: 20px; margin-bottom: 0;" />
+      </div>
+
+      <!-- Texto derecho centrado y ajustado para que no se corte a la derecha -->
+      <div class="about-text" style="text-align: center; padding: 40px 20px;">
+        <h2 style="font-size: 48px; line-height: 1.08; font-weight: 800; color: #0047FF; margin-bottom: 20px;">
+          ¿Quiénes somos<br>Bond What?
+        </h2>
+        <p style="font-size: 15px; line-height: 1.6; color: #333; max-width: 450px; margin: 0 auto 26px auto;">
+          Somos un canal de YouTube y marca creativa que convierte la curiosidad en contenido. Creamos MOCs, probamos técnicas y llevamos las piezas al límite. Mostramos cómo se hace y convertimos cada build en una excusa para ir más allá.
+        </p>
+        <a href="nosotros.html" class="btn-pill-soft" style="background-color: #B8C4FF; color: #0035CC; font-weight: 700; padding: 12px 28px; display: inline-block;">
+          Nuestra historia
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. LLEVA TUS MOCs A OTRO NIVEL CON NUESTRA APP -->
+  <section class="app-promo-section">
+    <div class="container app-promo-grid">
+      <div class="app-blue-box">
+        <h2>Lleva tus MOCs<br>a otro nivel con<br>nuestra app.</h2>
+        <p>¿Alguna vez pensaste "qué más se puede hacer con esto"? Nuestra app convierte tus piezas en retos y aprendizaje.</p>
+        <div class="store-badges">
+          <a href="web_app_inicio.html" class="store-badge">▶ Descarga en Google Play</a>
+          <a href="web_app_inicio.html" class="store-badge"> Descarga en App Store</a>
+        </div>
+      </div>
+
+      <div class="app-phone-box">
+        <img src="assets/img/recursos_visuales/mock_up_app.png" alt="App móvil Bond What" />
+      </div>
+
+      <img src="assets/img/ilustraciones/personaje_1_completo.png" alt="Mascota Bond" class="mascot-center-overlay" />
+    </div>
+  </section>
+
+  <!-- 6. ¿QUÉ VAS A CONSTRUIR? -->
+  <section class="cta-blue-band">
+    <div class="container">
+      <div class="chest-icon">
+        <img src="assets/img/ilustraciones/tesoro_fondo.png" alt="Cofre Bond What" style="width: 64px; height: auto;" />
+      </div>
+      <div class="kicker">EMPIEZA TU CAMINO COMO CONSTRUCTOR</div>
+      <h2>¿Qué vas a construir?</h2>
+      <p>Crea tu cuenta gratis y desbloquea retos, islas y tu propio laboratorio.</p>
+      <a href="registro.html" class="btn-orange">Crear mi cuenta gratis</a>
+    </div>
+  </section>
+
+  <!-- 7. ¿CÓMO APRENDES CON BOND WHAT? -->
+  <section class="methodology-section" style="padding: 80px 0 95px 0; overflow-x: hidden; background-color: #FFFFFF;">
+    <div class="container">
+      <div class="methodology-header" style="margin-bottom: 48px; align-items: center;">
+        <h2 style="font-size: 48px; line-height: 1.08;">¿Cómo aprendes<br>con Bond What?</h2>
+        <div class="methodology-header-right">
+          <p style="font-size: 16.5px; line-height: 1.55;">Un canal de YouTube y marca creativa que convierte la curiosidad en contenido, para ofrecerle a nuestra comunidad la mejor experiencia.</p>
+          <a href="aprender.html" class="btn-pill-soft">Ver más</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagramación equilibrada: celulares a ras izquierdo + pasos grandes con líneas divisoras sutiles -->
+    <div class="methodology-body" style="display: grid; grid-template-columns: 40% 60%; align-items: center; gap: 36px; width: 100%; max-width: 1380px; margin: 0 auto 0 0; padding: 0 5% 0 0;">
+      
+      <div class="phones-mockup" style="margin: 0; padding: 0; display: flex; justify-content: flex-start; align-items: center;">
+        <img src="assets/img/recursos_visuales/mock_up_app_2.png" alt="Mapa de Islas en celular" style="width: 100%; max-width: 480px; height: auto; display: block; object-fit: contain;" />
+      </div>
+
+      <div class="steps-list" style="width: 100%; display: flex; flex-direction: column; gap: 0;">
+        
+        <!-- Paso 1 -->
+        <div class="step-row" style="display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 24px 0; border-bottom: 1px solid #E5E9F2;">
+          <div style="flex: 1;">
+            <div class="step-tag" style="font-size: 15px; font-weight: 700; color: #0047FF; margin-bottom: 6px;">Paso 1</div>
+            <h3 style="font-size: 36px; line-height: 1.1; font-weight: 800; margin-bottom: 10px; color: #111;">Observa</h3>
+            <p style="font-size: 16.5px; line-height: 1.55; color: #555; margin: 0;">Dejas de consumir builds como si fueran solo contenido. Empiezas a notar decisiones, patrones y detalles que antes pasaban desapercibidos.</p>
+          </div>
+          <div class="step-thumb" style="width: 270px; height: 175px; flex-shrink: 0; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.07);">
+            <img src="assets/img/recursos_visuales/card_observa.png" alt="Paso 1 Observa" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="step-row" style="display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 24px 0; border-bottom: 1px solid #E5E9F2;">
+          <div style="flex: 1;">
+            <div class="step-tag" style="font-size: 15px; font-weight: 700; color: #0047FF; margin-bottom: 6px;">Paso 2</div>
+            <h3 style="font-size: 36px; line-height: 1.1; font-weight: 800; margin-bottom: 10px; color: #111;">Entiende</h3>
+            <p style="font-size: 16.5px; line-height: 1.55; color: #555; margin: 0;">Aprendes por qué funcionan las construcciones. No memorizas pasos, entiendes cómo se conectan las piezas y qué hace que algo se sostenga.</p>
+          </div>
+          <div class="step-thumb" style="width: 270px; height: 175px; flex-shrink: 0; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.07);">
+            <img src="assets/img/recursos_visuales/card_entiende.png" alt="Paso 2 Entiende" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="step-row" style="display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 24px 0; border-bottom: 1px solid #E5E9F2;">
+          <div style="flex: 1;">
+            <div class="step-tag" style="font-size: 15px; font-weight: 700; color: #0047FF; margin-bottom: 6px;">Paso 3</div>
+            <h3 style="font-size: 36px; line-height: 1.1; font-weight: 800; margin-bottom: 10px; color: #111;">Aplica</h3>
+            <p style="font-size: 16.5px; line-height: 1.55; color: #555; margin: 0;">No necesitas más piezas, necesitas criterio. Usas tu propio inventario para resolver retos y empezar a tomar decisiones reales al construir.</p>
+          </div>
+          <div class="step-thumb" style="width: 270px; height: 175px; flex-shrink: 0; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.07);">
+            <img src="assets/img/recursos_visuales/card_aplica.png" alt="Paso 3 Aplica" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          </div>
+        </div>
+
+        <!-- Paso 4 -->
+        <div class="step-row" style="display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 24px 0;">
+          <div style="flex: 1;">
+            <div class="step-tag" style="font-size: 15px; font-weight: 700; color: #0047FF; margin-bottom: 6px;">Paso 4</div>
+            <h3 style="font-size: 36px; line-height: 1.1; font-weight: 800; margin-bottom: 10px; color: #111;">Crea</h3>
+            <p style="font-size: 16.5px; line-height: 1.55; color: #555; margin: 0;">Llega un punto donde ya no buscas instrucciones. Construyes desde lo que sabes, ajustas, fallas y mejoras hasta lograr algo propio.</p>
+          </div>
+          <div class="step-thumb" style="width: 270px; height: 175px; flex-shrink: 0; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.07);">
+            <img src="assets/img/recursos_visuales/card_crea.png" alt="Paso 4 Crea" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 8. CONTADOR DE SUSCRIPTORES ANIMADO Y COMUNIDAD -->
+  <section id="community-section" class="community-proof" style="background-color: #F3F5F9; padding: 0 0 75px 0; border-top: 1px solid #E5E9F2; position: relative; overflow: visible;">
+    <div class="container" style="text-align: center;">
+      
+      <!-- Avatar grande con la mitad exacta montada sobre el borde del rectángulo gris -->
+      <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="yt-avatar-link" title="Ir al canal de YouTube de Bond What!">
+        <div class="yt-avatar-custom">
+          <img src="assets/img/ilustraciones/mascota_constructor.png" alt="Bond What YouTube" />
+        </div>
+      </a>
+
+      <!-- Título y contador subidos y más grandes -->
+      <div class="yt-channel-name" style="font-size: 20px; font-weight: 800; color: #111827; margin-top: 10px; margin-bottom: 2px;">
+        Bond What!
+      </div>
+      <div id="sub-counter-display" class="yt-counter" style="font-size: 68px; line-height: 1.05; font-weight: 900; color: #0F172A; letter-spacing: -1.5px; font-variant-numeric: tabular-nums;">
+        84.200
+      </div>
+      <div class="yt-label" style="font-size: 16px; font-weight: 600; color: #64748B; margin-top: 4px;">
+        Suscriptores
+      </div>
+    </div>
+
+    <!-- Carrusel horizontal deslizante con rueda del mouse -->
+    <div id="comments-slider" class="comments-carousel-wrapper">
+      
+      <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="comment-card-link">
+        <div class="comment-top">
+          <span class="comment-user">@carlos_bricks</span>
+          <span class="yt-badge">YouTube</span>
+        </div>
+        <p>"Por fin entendí cómo hacer uniones en ángulo sin que se desarme todo. Los videos explican súper claro la lógica detrás de cada pieza."</p>
+      </a>
+
+      <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="comment-card-link">
+        <div class="comment-top">
+          <span class="comment-user">@sofia.moc</span>
+          <span class="yt-badge">YouTube</span>
+        </div>
+        <p>"Dejé de comprar sets solo por seguir el manual, ahora armo mis propios vehículos y mecanismos con las piezas que ya tenía."</p>
+      </a>
+
+      <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="comment-card-link">
+        <div class="comment-top">
+          <span class="comment-user">@mateo_builder</span>
+          <span class="yt-badge">YouTube</span>
+        </div>
+        <p>"Los retos rápidos me ayudaron a usar piezas que tenía guardadas hace años y a perderle el miedo a probar conexiones nuevas."</p>
+      </a>
+
+      <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="comment-card-link">
+        <div class="comment-top">
+          <span class="comment-user">@valen.crea</span>
+          <span class="yt-badge">YouTube</span>
+        </div>
+        <p>"La mejor comunidad en español para aprender técnicas reales de construcción sin depender de instrucciones paso a paso."</p>
+      </a>
+
+      <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="comment-card-link">
+        <div class="comment-top">
+          <span class="comment-user">@Estefan_oficial</span>
+          <span class="yt-badge">YouTube</span>
+        </div>
+        <p>"Amo este canal y mi momento favorito fue el de llegar a los 100k. Cada video inspira demasiado para ponerse a construir."</p>
+      </a>
+
+      <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="comment-card-link">
+        <div class="comment-top">
+          <span class="comment-user">@Black_lego161</span>
+          <span class="yt-badge">YouTube</span>
+        </div>
+        <p>"Tremendo canal, gracias a sus ilusiones ópticas y trucos de SNOT mejoré muchísimo el acabado de mis maquetas."</p>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- 9. FOOTER AZUL -->
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <img src="assets/img/logos/logo_bond_what_2.png" alt="Bond What!" onerror="this.outerHTML='<h3 style=\'font-size:24px;margin-bottom:12px;\'>BOND WHAT!</h3>'" />
+        <h4>No es solo construir.</h4>
+        <p>Es entender cómo pensar con tus propias ideas y llevar tu creatividad al límite.</p>
+        <div class="footer-copy">© 2026 Bond What! — Todos los derechos reservados.</div>
+      </div>
+
+      <div class="footer-links">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aprender.html">Aprender</a></li>
+          <li><a href="tienda.html">Tienda</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="web_app_inicio.html">Web App</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-right">
+        <div class="social-icons">
+          <a href="#" class="social-btn">𝕏</a>
+          <a href="#" class="social-btn">f</a>
+          <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="social-btn">▶</a>
+          <a href="#" class="social-btn">📷</a>
+        </div>
+
+        <div class="footer-yt-card">
+          <h5>Empieza donde empieza todo.</h5>
+          <p>Suscríbete a nuestro canal de YouTube para ver retos semanales y técnicas en acción.</p>
+          <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="btn-orange">Suscribirme</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app_funcionamiento.js"></script>
+  <script>
+    // 1. Desplazamiento horizontal suave con la rueda del mouse sobre los comentarios
+    const commentsSlider = document.getElementById('comments-slider');
+    if (commentsSlider) {
+      commentsSlider.addEventListener('wheel', function (e) {
+        if (e.deltaY !== 0) {
+          e.preventDefault();
+          commentsSlider.scrollLeft += e.deltaY * 1.5;
+        }
+      }, { passive: false });
+    }
+
+    // 2. Animación de contador en rachas orgánicas desde 84.200 hasta 309.451 con reinicio en bucle
+    (function () {
+      const counterEl = document.getElementById('sub-counter-display');
+      const sectionEl = document.getElementById('community-section');
+      if (!counterEl || !sectionEl) return;
+
+      const START_VALUE = 84200;
+      const TARGET_VALUE = 309451;
+      let currentValue = START_VALUE;
+      let isRunning = false;
+      let timerId = null;
+
+      function formatColombianNumber(num) {
+        return Math.floor(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+
+      function runBurstStep() {
+        if (currentValue >= TARGET_VALUE) {
+          counterEl.textContent = formatColombianNumber(TARGET_VALUE);
+          // Pausa de 4.5 segundos en la meta exacta antes de reiniciar el ciclo
+          timerId = setTimeout(() => {
+            currentValue = START_VALUE;
+            counterEl.textContent = formatColombianNumber(currentValue);
+            runBurstStep();
+          }, 4500);
+          return;
+        }
+
+        // Rachas dinámicas: sube más rápido al inicio/medio y desacelera justo antes de 309.451
+        const remaining = TARGET_VALUE - currentValue;
+        let increment;
+        let delay;
+
+        if (remaining > 60000) {
+          // Racha rápida con variación orgánica
+          increment = Math.floor(Math.random() * 4800) + 2200;
+          delay = Math.random() < 0.25 ? 380 : 65; // Pequeñas micro-pausas cada tanto
+        } else if (remaining > 10000) {
+          // Racha media
+          increment = Math.floor(Math.random() * 1900) + 750;
+          delay = Math.random() < 0.3 ? 420 : 85;
+        } else {
+          // Racha final de precisión llegando al número exacto
+          increment = Math.max(1, Math.floor(remaining * 0.22));
+          delay = 110;
+        }
+
+        currentValue = Math.min(TARGET_VALUE, currentValue + increment);
+        counterEl.textContent = formatColombianNumber(currentValue);
+        timerId = setTimeout(runBurstStep, delay);
+      }
+
+      // Activar apenas el usuario haga scroll y vea la sección
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isRunning) {
+            isRunning = true;
+            runBurstStep();
+          }
+        });
+      }, { threshold: 0.25 });
+
+      observer.observe(sectionEl);
+    })();
+  </script>
+</body>
+</html>

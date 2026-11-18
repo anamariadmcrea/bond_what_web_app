@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ingresa — Bond What!</title>
+  <link rel="stylesheet" href="css/estilo.css" />
+</head>
+<body class="auth-body">
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/logos/logo-bond-what.png" alt="Bond What!" onerror="this.outerHTML='<strong style=\'color:#0047FF;font-size:22px;\'>BOND WHAT!</strong>'" />
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="aprender.html">Aprender</a>
+        <a href="tienda.html">Tienda</a>
+        <a href="nosotros.html">Nosotros</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="registro.html" class="link-register">Regístrate</a>
+        <a href="ingresa.html" class="btn-pill-blue">Ingresa</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO LOGIN -->
+  <main class="auth-wrapper">
+    <div class="auth-progress">
+      <div class="progress-bar-segment active"></div>
+      <div class="progress-bar-segment"></div>
+      <div class="progress-bar-segment"></div>
+      <div class="progress-bar-segment"></div>
+    </div>
+
+    <div class="auth-split-card">
+      <!-- Lado Naranja -->
+      <div class="auth-side-panel orange">
+        <div class="auth-side-badge">🏝️</div>
+        <div class="auth-side-kicker">QUÉ BUENO VERTE</div>
+        <h2>Tu mapa te está esperando.</h2>
+        <p>Continúa exactamente donde dejaste tu última construcción.</p>
+      </div>
+
+      <!-- Formulario -->
+      <div class="auth-form-panel">
+        <div class="auth-kicker">INICIAR SESIÓN</div>
+        <h1>Hola de nuevo</h1>
+        <p class="auth-subtitle">Entra a tu espacio de construcción.</p>
+
+        <form onsubmit="event.preventDefault(); window.location.href='web_app_laboratorio.html';">
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" class="form-input" placeholder="hugo@gmail.com" value="hugo@gmail.com" required />
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" class="form-input" placeholder="••••••••••••" value="12345678" required />
+          </div>
+
+          <div class="auth-helper-row">
+            <a href="#" class="auth-link" onclick="alert('Te enviamos un enlace de recuperación a tu correo.'); return false;">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button type="submit" class="btn-orange" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+            Entrar a Mi Espacio
+          </button>
+        </form>
+
+        <div class="auth-switch">
+          ¿Aún no tienes cuenta? <a href="registro.html" class="auth-link">Créala gratis</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

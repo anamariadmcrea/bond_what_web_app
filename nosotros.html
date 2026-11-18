@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nosotros — Bond What!</title>
+  <link rel="stylesheet" href="css/estilo.css" />
+  <style>
+    /* Hero Banner Amarillo de Nosotros */
+    .nosotros-hero {
+      background-color: #FFE600;
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+    }
+    .nosotros-hero-grid {
+      display: grid;
+      grid-template-columns: 52% 48%;
+      align-items: center;
+      max-width: 1240px;
+      margin: 0 auto;
+      min-height: 440px;
+      padding: 0 24px;
+    }
+    .nosotros-visual-stack {
+      position: relative;
+      height: 100%;
+      min-height: 440px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .nosotros-icons-left {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 155px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .nosotros-icons-right {
+      position: absolute;
+      left: 33%;
+      top: 0;
+      width: 155px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .nosotros-founders-img {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 430px;
+      height: auto;
+      display: block;
+      margin-left: 36px;
+      margin-bottom: 0;
+    }
+    .nosotros-hero-text {
+      text-align: right;
+      padding: 40px 10px 40px 24px;
+      z-index: 3;
+    }
+    .nosotros-hero-text .kicker {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 8px;
+    }
+    .nosotros-hero-text h1 {
+      font-size: 56px;
+      line-height: 1.05;
+      font-weight: 900;
+      color: #0047FF;
+      margin: 0 0 16px 0;
+    }
+    .nosotros-hero-text p {
+      font-size: 16px;
+      line-height: 1.55;
+      color: #1E293B;
+      max-width: 410px;
+      margin: 0 0 0 auto;
+      font-weight: 500;
+    }
+
+    /* Tarjetas centrales: Nuestra Misión y Conoce nuestro canal */
+    .nosotros-cards-section {
+      padding: 56px 0 36px 0;
+      background-color: #FFFFFF;
+    }
+    .nosotros-dual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+    .nosotros-info-card {
+      background: #FFFFFF;
+      border: 1px solid #E5E9F2;
+      border-radius: 24px;
+      padding: 36px 40px;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.04);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .nosotros-info-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    }
+    .mission-kicker {
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #FF4D15;
+      margin-bottom: 12px;
+    }
+    .nosotros-info-card h2 {
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 14px 0;
+    }
+    .nosotros-info-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #64748B;
+      margin: 0;
+    }
+    .channel-card-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      height: 100%;
+    }
+    .channel-card-img {
+      width: 155px;
+      height: auto;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+    .nosotros-info-card:hover .channel-card-img {
+      transform: scale(1.05);
+    }
+    .channel-card-right {
+      text-align: right;
+      flex: 1;
+    }
+    .channel-card-right h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0047FF;
+      margin: 0 0 8px 0;
+    }
+    .channel-card-right p {
+      font-size: 14.5px;
+      line-height: 1.5;
+      color: #64748B;
+      margin: 0 0 20px 0;
+    }
+    .btn-ver-canal-soft {
+      display: inline-block;
+      background-color: #B8C4FF;
+      color: #0035CC;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 11px 26px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    .btn-ver-canal-soft:hover {
+      background-color: #9EB0FF;
+      transform: scale(1.04);
+    }
+
+    /* Banner Azul Newsletter */
+    .newsletter-section {
+      padding: 16px 0 72px 0;
+      background-color: #FFFFFF;
+    }
+    .newsletter-blue-box {
+      max-width: 1060px;
+      margin: 0 auto;
+      background-color: #0047FF;
+      border-radius: 26px;
+      padding: 32px 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      color: #FFFFFF;
+    }
+    .newsletter-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .newsletter-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+    .newsletter-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .newsletter-left h3 {
+      font-size: 22px;
+      font-weight: 800;
+      margin: 0 0 4px 0;
+      color: #FFFFFF;
+    }
+    .newsletter-left p {
+      font-size: 14px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.88);
+    }
+    .newsletter-form {
+      background-color: #FFFFFF;
+      border-radius: 999px;
+      padding: 6px 6px 6px 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 390px;
+    }
+    .newsletter-form input {
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #0F172A;
+      flex: 1;
+      background: transparent;
+    }
+    .newsletter-form button {
+      background-color: #B8C4FF;
+      color: #0035CC;
+      border: none;
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    .newsletter-form button:hover {
+      background-color: #9EB0FF;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. NAVBAR (Logo limpio sin deformar y Nosotros activo) -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/logos/logo-bondwhat_1.png" alt="Bond What!" style="height: 44px; width: auto; object-fit: contain;" onerror="this.outerHTML='<strong style=\'color:#0047FF;font-size:22px;\'>BOND WHAT!</strong>'" />
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="aprender.html">Aprender</a>
+        <a href="tienda.html">Tienda</a>
+        <a href="nosotros.html" class="active">Nosotros</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="registro.html" class="link-register">Regístrate</a>
+        <a href="ingresa.html" class="btn-pill-blue">Ingresa</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. HERO BANNER AMARILLO CON FUNDADORES E ICONOS A RAS -->
+  <section class="nosotros-hero">
+    <div class="nosotros-hero-grid">
+      
+      <!-- Composición visual izquierda -->
+      <div class="nosotros-visual-stack">
+        <img src="assets/img/ilustraciones/banner_iconos.png" alt="Iconos Bond What izquierda" class="nosotros-icons-left" />
+        <img src="assets/img/ilustraciones/banner_iconos_2.png" alt="Iconos Bond What derecha" class="nosotros-icons-right" />
+        <img src="assets/img/recursos_visuales/foto_bond_what_personas.png" alt="Fundadores de Bond What" class="nosotros-founders-img" />
+      </div>
+
+      <!-- Texto derecho -->
+      <div class="nosotros-hero-text">
+        <div class="kicker">¿Por qué existe Bond What?</div>
+        <h1>¿Quienes somos?</h1>
+        <p>Somos un canal de YouTube y marca creativa que convierte la curiosidad en contenido.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3. NUESTRA MISIÓN + CONOCE NUESTRO CANAL -->
+  <section class="nosotros-cards-section">
+    <div class="container">
+      <div class="nosotros-dual-grid">
+        
+        <!-- Tarjeta izquierda: Nuestra Misión -->
+        <div class="nosotros-info-card">
+          <div class="mission-kicker">NUESTRA MISIÓN</div>
+          <h2>Que cada persona descubra que puede crear sin un manual.</h2>
+          <p>Diseñamos experiencias que enseñan a observar, experimentar, equivocarse y volver a intentarlo.</p>
+        </div>
+
+        <!-- Tarjeta derecha: Conoce nuestro canal -->
+        <div class="nosotros-info-card">
+          <div class="channel-card-inner">
+            <img src="assets/img/ilustraciones/icono_canal.png" alt="Canal de YouTube Bond What" class="channel-card-img" />
+            <div class="channel-card-right">
+              <h3>Conoce nuestro canal</h3>
+              <p>Historias, retos y procesos completos de la comunidad.</p>
+              <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="btn-ver-canal-soft">Ver canal</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. BANNER AZUL DE NEWSLETTER -->
+  <section class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-blue-box">
+        <div class="newsletter-left">
+          <div class="newsletter-avatar">
+            <img src="assets/img/ilustraciones/mascota_rostro_1.png" alt="Mascota Bond What" />
+          </div>
+          <div>
+            <h3>Ideas nuevas, directo a tu correo</h3>
+            <p>Retos, técnicas y novedades de la comunidad.</p>
+          </div>
+        </div>
+
+        <form id="newsletter-form" class="newsletter-form">
+          <input type="email" id="newsletter-email" placeholder="tu@correo.com" required />
+          <button type="submit" id="newsletter-btn">Quiero recibirlas</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. FOOTER AZUL (Idéntico al Home, Aprender y Tienda) -->
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <img src="assets/img/logos/logo_bond_what_2.png" alt="Bond What!" style="height: 48px; width: auto; object-fit: contain;" onerror="this.outerHTML='<h3 style=\'font-size:24px;margin-bottom:12px;\'>BOND WHAT!</h3>'" />
+        <h4>No es solo construir.</h4>
+        <p>Es entender cómo pensar con tus propias ideas y llevar tu creatividad al límite.</p>
+        <div class="footer-copy">© 2026 Bond What! — Todos los derechos reservados.</div>
+      </div>
+
+      <div class="footer-links">
+        <h4>Explorar</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aprender.html">Aprender</a></li>
+          <li><a href="tienda.html">Tienda</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="web_app_inicio.html">Web App</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-right">
+        <div class="social-icons">
+          <a href="#" class="social-btn">𝕏</a>
+          <a href="#" class="social-btn">f</a>
+          <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="social-btn">▶</a>
+          <a href="#" class="social-btn">📷</a>
+        </div>
+
+        <div class="footer-yt-card">
+          <h5>Empieza donde empieza todo.</h5>
+          <p>Suscríbete a nuestro canal de YouTube para ver retos semanales y técnicas en acción.</p>
+          <a href="https://www.youtube.com/@bondwhat" target="_blank" rel="noopener noreferrer" class="btn-orange">Suscribirme</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app_funcionamiento.js"></script>
+  <script>
+    // Confirmación interactiva al suscribirse al boletín
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('newsletter-btn');
+        const input = document.getElementById('newsletter-email');
+        btn.textContent = '¡Listo, suscrito!';
+        btn.style.backgroundColor = '#22C55E';
+        btn.style.color = '#FFFFFF';
+        input.value = '';
+        setTimeout(() => {
+          btn.textContent = 'Quiero recibirlas';
+          btn.style.backgroundColor = '#B8C4FF';
+          btn.style.color = '#0035CC';
+        }, 3000);
+      });
+    }
+  </script>
+</body>
+</html>
